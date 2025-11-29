@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⛏️ Crypto Mining Pro</title>
+    <title>⛏️ Crypto Mining Pro - All-in-One</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
@@ -25,12 +25,12 @@
             margin: 0 auto;
         }
 
+        /* Header */
         .header {
-            text-align: center;
-            padding: 30px 0;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 20px;
+            padding: 30px;
             margin-bottom: 30px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
@@ -38,22 +38,21 @@
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            text-align: center;
         }
 
         .header p {
-            font-size: 1.1em;
+            text-align: center;
             opacity: 0.9;
+            margin-bottom: 20px;
         }
 
         .header-controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 20px;
             flex-wrap: wrap;
             gap: 15px;
-            padding: 0 20px;
         }
 
         .user-info {
@@ -74,24 +73,63 @@
             border-radius: 25px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 1em;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .logout-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
-            background: linear-gradient(135deg, #dc2626, #b91c1c);
         }
 
-        .logout-btn:active {
-            transform: translateY(0);
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
+        .tab-btn {
+            padding: 15px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1em;
+        }
+
+        .tab-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-color: #10b981;
+            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Dashboard Cards */
         .dashboard {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -100,7 +138,7 @@
         }
 
         .stat-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+            background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
             padding: 25px;
             border-radius: 15px;
@@ -127,8 +165,6 @@
         .stat-card .value {
             font-size: 2em;
             font-weight: bold;
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .stat-card .sub-value {
@@ -137,181 +173,211 @@
             color: #4ade80;
         }
 
+        /* Mining Control */
         .mining-control {
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
             padding: 30px;
             border-radius: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             text-align: center;
+            margin-bottom: 30px;
         }
 
-        .mining-button {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            border: none;
+        .mining-btn {
             padding: 20px 60px;
-            font-size: 1.3em;
+            font-size: 1.5em;
+            font-weight: bold;
+            border: none;
             border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
             transition: all 0.3s ease;
-            font-weight: bold;
+            color: white;
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
         }
 
-        .mining-button:hover {
+        .mining-btn:hover {
             transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6);
         }
 
-        .mining-button.active {
+        .mining-btn.active {
             background: linear-gradient(135deg, #ef4444, #dc2626);
-            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
+            0%, 100% { box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); }
+            50% { box-shadow: 0 8px 35px rgba(239, 68, 68, 0.6); }
         }
 
-        .mining-status {
-            margin-top: 20px;
-            font-size: 1.2em;
-            padding: 15px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            display: inline-block;
-        }
-
-        .charts-section {
+        /* Shop Grid */
+        .shop-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
 
-        .chart-container {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        .chart-container h2 {
-            margin-bottom: 20px;
-            font-size: 1.5em;
-            text-align: center;
-        }
-
-        .miners-section {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            padding: 25px;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        .miners-section h2 {
-            margin-bottom: 20px;
-            font-size: 1.5em;
-            text-align: center;
-        }
-
         .miner-card {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 25px;
             border-radius: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             transition: all 0.3s ease;
         }
 
         .miner-card:hover {
-            background: rgba(0, 0, 0, 0.3);
-            transform: translateX(5px);
+            transform: translateY(-5px);
+            border: 2px solid #10b981;
         }
 
-        .miner-info {
-            flex: 1;
-        }
-
-        .miner-name {
-            font-size: 1.2em;
+        .buy-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
             font-weight: bold;
-            margin-bottom: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
         }
 
-        .miner-power {
-            color: #fbbf24;
-            font-size: 0.9em;
+        .buy-btn:hover:not(:disabled) {
+            transform: scale(1.05);
         }
 
-        .miner-price {
+        .buy-btn:disabled {
+            background: gray;
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Lucky Wheel */
+        .wheel-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        .wheel {
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            border: 10px solid #fbbf24;
+            position: relative;
+            transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            background: conic-gradient(
+                from 0deg,
+                #ef4444 0deg 45deg,
+                #f59e0b 45deg 90deg,
+                #10b981 90deg 135deg,
+                #3b82f6 135deg 180deg,
+                #8b5cf6 180deg 225deg,
+                #ec4899 225deg 270deg,
+                #14b8a6 270deg 315deg,
+                #f97316 315deg 360deg
+            );
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .wheel-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+        }
+
+        .spin-btn {
+            padding: 20px 50px;
             font-size: 1.3em;
             font-weight: bold;
-            color: #4ade80;
-        }
-
-        .buy-button {
-            background: linear-gradient(135deg, #3b82f6, #2563eb);
-            color: white;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
             border: none;
-            padding: 12px 25px;
-            border-radius: 25px;
+            border-radius: 50px;
+            color: white;
             cursor: pointer;
-            font-weight: bold;
+            box-shadow: 0 8px 25px rgba(251, 191, 36, 0.4);
             transition: all 0.3s ease;
         }
 
-        .buy-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
+        .spin-btn:hover:not(:disabled) {
+            transform: scale(1.1);
         }
 
-        .buy-button:disabled {
+        .spin-btn:disabled {
             background: gray;
             cursor: not-allowed;
             opacity: 0.5;
         }
 
-        @media (max-width: 768px) {
-            .charts-section {
-                grid-template-columns: 1fr;
-            }
-            
-            .header h1 {
-                font-size: 1.8em;
-            }
-            
-            .mining-button {
-                padding: 15px 40px;
-                font-size: 1.1em;
-            }
-
-            .header-controls {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .user-info {
-                justify-content: center;
-            }
-
-            .logout-btn {
-                width: 100%;
-                justify-content: center;
-            }
+        /* Transactions */
+        .transaction-list {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
         }
 
+        .transaction-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Referral */
+        .referral-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+        }
+
+        .referral-code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 10px;
+            font-size: 1.5em;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            letter-spacing: 3px;
+        }
+
+        .copy-btn {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .copy-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Notification */
         .notification {
             position: fixed;
             top: 20px;
@@ -320,29 +386,34 @@
             color: white;
             padding: 15px 25px;
             border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
             display: none;
             animation: slideIn 0.3s ease;
             z-index: 1000;
         }
 
         @keyframes slideIn {
-            from {
-                transform: translateX(400px);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 1.8em; }
+            .nav-tabs { flex-direction: column; }
+            .tab-btn { width: 100%; }
+            .wheel { width: 300px; height: 300px; }
+            .header-controls { flex-direction: column; }
+            .logout-btn { width: 100%; }
         }
     </style>
 </head>
 <body>
     <div class="container">
+        <!-- Header -->
         <div class="header">
-            <h1>⛏️ Crypto Mining Pro</h1>
-            <p>ขุดรายได้แบบเรียลไทม์ | รายได้จริง กำไรชัวร์</p>
+            <h1>⛏️ Crypto Mining Pro - All-in-One</h1>
+            <p>ขุดรายได้ | วงล้อนำโชค | ฝาก-ถอน | แนะนำเพื่อน - ทุกอย่างในที่เดียว</p>
             
             <div class="header-controls">
                 <div class="user-info">
@@ -350,683 +421,392 @@
                     <span id="username">ผู้ใช้งาน</span>
                 </div>
                 <button class="logout-btn" onclick="logout()">
-                    <span>🚪</span>
-                    <span>ออกจากระบบ</span>
+                    <span>🚪 ออกจากระบบ</span>
                 </button>
             </div>
         </div>
 
-        <div class="dashboard">
-            <div class="stat-card">
-                <div class="icon">💰</div>
-                <div class="label">ยอดเงินรวม</div>
-                <div class="value" id="totalBalance">0.00</div>
-                <div class="sub-value">THB</div>
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('mining')">⛏️ ขุดเงิน</button>
+            <button class="tab-btn" onclick="switchTab('shop')">🛒 ร้านค้า</button>
+            <button class="tab-btn" onclick="switchTab('wheel')">🎰 วงล้อโชค</button>
+            <button class="tab-btn" onclick="switchTab('wallet')">💰 กระเป๋าเงิน</button>
+            <button class="tab-btn" onclick="switchTab('referral')">👥 แนะนำเพื่อน</button>
+        </div>
+
+        <!-- Tab 1: Mining -->
+        <div id="mining" class="tab-content active">
+            <div class="dashboard">
+                <div class="stat-card">
+                    <div class="icon">💰</div>
+                    <div class="label">ยอดเงินรวม</div>
+                    <div class="value">฿<span id="totalBalance">0.00</span></div>
+                    <div class="sub-value">THB</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">⚡</div>
+                    <div class="label">อัตราการขุด</div>
+                    <div class="value">฿<span id="miningRate">0.10</span></div>
+                    <div class="sub-value">/วินาที</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">📈</div>
+                    <div class="label">รายได้วันนี้</div>
+                    <div class="value">฿<span id="todayEarnings">0.00</span></div>
+                    <div class="sub-value">THB</div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">🔥</div>
+                    <div class="label">พลังขุดรวม</div>
+                    <div class="value"><span id="totalPower">1.0</span></div>
+                    <div class="sub-value">MH/s</div>
+                </div>
             </div>
-            <div class="stat-card">
-                <div class="icon">⚡</div>
-                <div class="label">อัตราการขุด</div>
-                <div class="value" id="miningRate">0.00</div>
-                <div class="sub-value">THB/วินาที</div>
-            </div>
-            <div class="stat-card">
-                <div class="icon">📈</div>
-                <div class="label">รายได้วันนี้</div>
-                <div class="value" id="todayEarnings">0.00</div>
-                <div class="sub-value">THB</div>
-            </div>
-            <div class="stat-card">
-                <div class="icon">🔥</div>
-                <div class="label">พลังขุดรวม</div>
-                <div class="value" id="totalPower">1.0</div>
-                <div class="sub-value">MH/s</div>
+
+            <div class="mining-control">
+                <h2 style="margin-bottom: 20px;">ควบคุมการขุด</h2>
+                <button class="mining-btn" id="miningBtn" onclick="toggleMining()">
+                    🚀 เริ่มขุดเลย!
+                </button>
+                <p style="margin-top: 20px; opacity: 0.8;" id="miningStatus">
+                    พร้อมเริ่มขุด! กดปุ่มเพื่อเริ่ม
+                </p>
             </div>
         </div>
 
-        <div class="mining-control">
-            <button class="mining-button" id="miningButton" onclick="toggleMining()">
-                🚀 เริ่มขุด
-            </button>
-            <div class="mining-status" id="miningStatus">
-                สถานะ: รอเริ่มต้น
+        <!-- Tab 2: Shop -->
+        <div id="shop" class="tab-content">
+            <h2 style="margin-bottom: 20px;">🛒 ร้านค้าเครื่องขุด</h2>
+            <p style="opacity: 0.8; margin-bottom: 20px;">ซื้อเครื่องขุดเพื่อเพิ่มรายได้!</p>
+            
+            <div class="shop-grid" id="shopGrid">
+                <!-- จะสร้างด้วย JavaScript -->
             </div>
         </div>
 
-        <div class="charts-section">
-            <div class="chart-container">
-                <h2>📊 กราฟรายได้รายชั่วโมง</h2>
-                <canvas id="earningsChart"></canvas>
-            </div>
-            <div class="chart-container">
-                <h2>💹 กราฟยอดเงินสะสม</h2>
-                <canvas id="balanceChart"></canvas>
+        <!-- Tab 3: Lucky Wheel -->
+        <div id="wheel" class="tab-content">
+            <div class="wheel-container">
+                <h2>🎰 วงล้อนำโชค</h2>
+                <p style="opacity: 0.8;">หมุนวงล้อเพื่อลุ้นรับรางวัล!</p>
+                
+                <div class="wheel" id="luckyWheel">
+                    <div class="wheel-center">🎯</div>
+                </div>
+
+                <p style="font-size: 1.2em;">
+                    เหลือ: <span id="spinsLeft" style="color: #fbbf24; font-weight: bold;">3</span> ครั้ง
+                </p>
+
+                <button class="spin-btn" onclick="spinWheel()" id="spinBtn">
+                    🎲 หมุนวงล้อ
+                </button>
             </div>
         </div>
 
-        <div class="charts-section" style="margin-bottom: 30px;">
-            <div class="chart-container">
-                <h2>🎁 รางวัลประจำวัน</h2>
-                <div id="dailyRewardsContainer"></div>
+        <!-- Tab 4: Wallet -->
+        <div id="wallet" class="tab-content">
+            <h2 style="margin-bottom: 20px;">💰 กระเป๋าเงิน</h2>
+            
+            <div class="dashboard" style="margin-bottom: 30px;">
+                <div class="stat-card">
+                    <div class="icon">💵</div>
+                    <div class="label">ยอดเงินคงเหลือ</div>
+                    <div class="value">฿<span id="walletBalance">0.00</span></div>
+                </div>
+                <div class="stat-card">
+                    <div class="icon">📊</div>
+                    <div class="label">รายการทั้งหมด</div>
+                    <div class="value"><span id="transactionCount">0</span></div>
+                    <div class="sub-value">รายการ</div>
+                </div>
             </div>
-            <div class="chart-container">
-                <h2>🎯 เควสรายวัน</h2>
-                <div id="questsContainer"></div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <button class="buy-btn" style="font-size: 1.2em; padding: 20px;" onclick="showNotification('ฟีเจอร์ฝากเงิน - กำลังพัฒนา')">
+                    💳 ฝากเงิน
+                </button>
+                <button class="buy-btn" style="font-size: 1.2em; padding: 20px;" onclick="showNotification('ฟีเจอร์ถอนเงิน - กำลังพัฒนา')">
+                    🏦 ถอนเงิน
+                </button>
+            </div>
+
+            <h3 style="margin-bottom: 15px;">📜 ประวัติการทำรายการ</h3>
+            <div class="transaction-list" id="transactionList">
+                <p style="text-align: center; opacity: 0.6;">ยังไม่มีรายการ</p>
             </div>
         </div>
 
-        <div class="miners-section">
-            <h2>🛒 ร้านค้าเครื่องขุด</h2>
-            <div id="minersContainer"></div>
+        <!-- Tab 5: Referral -->
+        <div id="referral" class="tab-content">
+            <div class="referral-box">
+                <h2 style="text-align: center; margin-bottom: 20px;">👥 แนะนำเพื่อน รับรางวัล</h2>
+                <p style="text-align: center; opacity: 0.8; margin-bottom: 30px;">
+                    แนะนำเพื่อนมาสมัคร รับ ฿50 ทันที! เพื่อนของคุณก็ได้ ฿100
+                </p>
+
+                <h3>รหัสแนะนำของคุณ:</h3>
+                <div class="referral-code" id="referralCode">LOADING...</div>
+                
+                <div style="text-align: center;">
+                    <button class="copy-btn" onclick="copyReferralCode()">
+                        📋 คัดลอกรหัส
+                    </button>
+                </div>
+
+                <div class="dashboard" style="margin-top: 30px;">
+                    <div class="stat-card">
+                        <div class="icon">👥</div>
+                        <div class="label">เพื่อนที่แนะนำ</div>
+                        <div class="value"><span id="referralCount">0</span></div>
+                        <div class="sub-value">คน</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="icon">💰</div>
+                        <div class="label">รายได้จากแนะนำ</div>
+                        <div class="value">฿<span id="referralEarnings">0.00</span></div>
+                        <div class="sub-value">THB</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="notification" id="notification"></div>
 
-    <!-- Modal รับรางวัล -->
-    <div id="rewardModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center;">
-        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 40px; border-radius: 20px; text-align: center; max-width: 400px; animation: bounceIn 0.5s;">
-            <div style="font-size: 5em; margin-bottom: 20px;">🎉</div>
-            <h2 style="margin-bottom: 10px;">ยินดีด้วย!</h2>
-            <p id="rewardText" style="font-size: 1.5em; margin: 20px 0;"></p>
-            <button onclick="closeRewardModal()" style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 15px 40px; border-radius: 25px; font-size: 1.2em; cursor: pointer; font-weight: bold;">รับรางวัล</button>
-        </div>
-    </div>
-
-    <style>
-        @keyframes bounceIn {
-            0% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .reward-card {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .reward-card:hover {
-            background: rgba(0, 0, 0, 0.3);
-            transform: translateY(-3px);
-        }
-
-        .reward-card.claimed {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .reward-icon {
-            font-size: 3em;
-            margin-bottom: 10px;
-        }
-
-        .reward-day {
-            font-size: 0.9em;
-            opacity: 0.8;
-            margin-bottom: 5px;
-        }
-
-        .reward-amount {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #4ade80;
-            margin: 10px 0;
-        }
-
-        .claim-button {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .claim-button:hover {
-            transform: scale(1.05);
-        }
-
-        .claim-button:disabled {
-            background: gray;
-            cursor: not-allowed;
-            opacity: 0.5;
-        }
-
-        .quest-card {
-            background: rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 15px;
-            transition: all 0.3s ease;
-        }
-
-        .quest-card:hover {
-            background: rgba(0, 0, 0, 0.3);
-        }
-
-        .quest-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .quest-title {
-            font-size: 1.1em;
-            font-weight: bold;
-        }
-
-        .quest-reward {
-            background: #4ade80;
-            color: #000;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            font-size: 0.9em;
-        }
-
-        .quest-description {
-            font-size: 0.9em;
-            opacity: 0.8;
-            margin-bottom: 15px;
-        }
-
-        .progress-bar {
-            background: rgba(255, 255, 255, 0.1);
-            height: 20px;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 10px;
-        }
-
-        .progress-fill {
-            background: linear-gradient(90deg, #10b981, #059669);
-            height: 100%;
-            transition: width 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8em;
-            font-weight: bold;
-        }
-
-        .quest-status {
-            text-align: center;
-            font-size: 0.9em;
-        }
-
-        .quest-completed {
-            color: #4ade80;
-            font-weight: bold;
-        }
-    </style>
-
     <script>
-        // ระบบข้อมูล
+        // ============ ข้อมูลเกม ============
         let gameData = {
             balance: 0,
+            miningRate: 0.10,
             todayEarnings: 0,
-            miningRate: 0.10, // THB ต่อวินาที
             totalPower: 1.0,
             isMining: false,
-            ownedMiners: {},
-            earningsHistory: [],
-            balanceHistory: [],
-            lastClaimDate: null,
-            currentDay: 1,
-            dailyRewards: [
-                { day: 1, amount: 100, claimed: false },
-                { day: 2, amount: 200, claimed: false },
-                { day: 3, amount: 300, claimed: false },
-                { day: 4, amount: 500, claimed: false },
-                { day: 5, amount: 800, claimed: false },
-                { day: 6, amount: 1200, claimed: false },
-                { day: 7, amount: 2000, claimed: false }
-            ],
-            quests: [
-                { 
-                    id: 1, 
-                    title: 'เริ่มต้นขุด', 
-                    description: 'เริ่มขุดครั้งแรกของวันนี้',
-                    reward: 50,
-                    progress: 0,
-                    goal: 1,
-                    completed: false
-                },
-                { 
-                    id: 2, 
-                    title: 'ขุดติดต่อกัน 5 นาที', 
-                    description: 'ขุดต่อเนื่องเป็นเวลา 5 นาที',
-                    reward: 150,
-                    progress: 0,
-                    goal: 300, // วินาที
-                    completed: false
-                },
-                { 
-                    id: 3, 
-                    title: 'รายได้ 1,000 บาท', 
-                    description: 'ทำรายได้รวมวันนี้ถึง 1,000 บาท',
-                    reward: 200,
-                    progress: 0,
-                    goal: 1000,
-                    completed: false
-                },
-                { 
-                    id: 4, 
-                    title: 'ซื้อเครื่องขุด', 
-                    description: 'ซื้อเครื่องขุดอย่างน้อย 1 เครื่อง',
-                    reward: 100,
-                    progress: 0,
-                    goal: 1,
-                    completed: false
-                },
-                { 
-                    id: 5, 
-                    title: 'พลังขุด 50 MH/s', 
-                    description: 'เพิ่มพลังขุดรวมให้ถึง 50 MH/s',
-                    reward: 500,
-                    progress: 0,
-                    goal: 50,
-                    completed: false
-                }
-            ],
-            miningTime: 0
+            miners: [],
+            spinsRemaining: 3,
+            referralCode: '',
+            referrals: [],
+            referralEarnings: 0,
+            transactions: []
         };
 
-        // ข้อมูลเครื่องขุด
-        const miners = [
-            { id: 1, name: 'เครื่องขุดมือใหม่', power: 1.0, price: 0, rate: 0.10 },
-            { id: 2, name: 'เครื่องขุด RTX 3060', power: 5.0, price: 500, rate: 0.50 },
-            { id: 3, name: 'เครื่องขุด RTX 3080', power: 15.0, price: 2000, rate: 1.50 },
-            { id: 4, name: 'เครื่องขุด RTX 4090', power: 30.0, price: 5000, rate: 3.00 },
-            { id: 5, name: 'ASIC Miner S19', power: 100.0, price: 20000, rate: 10.00 },
-            { id: 6, name: 'Mining Farm', power: 500.0, price: 100000, rate: 50.00 }
+        // ============ Miners Data ============
+        const minerTypes = [
+            { id: 'starter', name: 'มือใหม่', icon: '⛏️', power: 1.0, rate: 0.10, price: 0 },
+            { id: 'rtx3060', name: 'RTX 3060', icon: '🖥️', power: 5.0, rate: 0.50, price: 500 },
+            { id: 'rtx3080', name: 'RTX 3080', icon: '💻', power: 15.0, rate: 1.50, price: 2000 },
+            { id: 'rtx4090', name: 'RTX 4090', icon: '🎮', power: 30.0, rate: 3.00, price: 5000 },
+            { id: 'asics19', name: 'ASIC S19', icon: '⚙️', power: 100.0, rate: 10.00, price: 20000 },
+            { id: 'farm', name: 'Mining Farm', icon: '🏭', power: 500.0, rate: 50.00, price: 100000 }
         ];
 
-        // เริ่มต้นเครื่องขุดแรก
-        gameData.ownedMiners[1] = 1;
+        // ============ Lucky Wheel Prizes ============
+        const wheelPrizes = [10, 20, 50, 100, 200, 500, 1000, 0];
 
-        // สร้างกราฟ
-        const earningsCtx = document.getElementById('earningsChart').getContext('2d');
-        const balanceCtx = document.getElementById('balanceChart').getContext('2d');
+        // ============ Tab System ============
+        function switchTab(tabName) {
+            // ซ่อนทุก tab
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
 
-        // กราฟรายได้
-        const earningsChart = new Chart(earningsCtx, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'รายได้ (THB)',
-                    data: [],
-                    borderColor: '#10b981',
-                    backgroundColor: 'rgba(16, 185, 129, 0.2)',
-                    tension: 0.4,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        labels: { color: 'white', font: { size: 14 } }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { color: 'white' },
-                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                    },
-                    x: {
-                        ticks: { color: 'white' },
-                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                    }
-                }
+            // แสดง tab ที่เลือก
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            // อัปเดตข้อมูล
+            if (tabName === 'wallet') {
+                updateWallet();
             }
-        });
+        }
 
-        // กราฟยอดเงิน
-        const balanceChart = new Chart(balanceCtx, {
-            type: 'line',
-            data: {
-                labels: [],
-                datasets: [{
-                    label: 'ยอดเงินสะสม (THB)',
-                    data: [],
-                    borderColor: '#3b82f6',
-                    backgroundColor: 'rgba(59, 130, 246, 0.2)',
-                    tension: 0.4,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        labels: { color: 'white', font: { size: 14 } }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: { color: 'white' },
-                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                    },
-                    x: {
-                        ticks: { color: 'white' },
-                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
-                    }
-                }
-            }
-        });
+        // ============ Mining System ============
+        let miningInterval = null;
 
-        // ฟังก์ชันเริ่ม/หยุดขุด
         function toggleMining() {
             gameData.isMining = !gameData.isMining;
-            const button = document.getElementById('miningButton');
+            const btn = document.getElementById('miningBtn');
             const status = document.getElementById('miningStatus');
 
             if (gameData.isMining) {
-                button.textContent = '⏸️ หยุดขุด';
-                button.classList.add('active');
+                btn.textContent = '⏸️ หยุดขุด';
+                btn.classList.add('active');
                 status.textContent = '🔥 กำลังขุด... รายได้กำลังเข้า!';
-                showNotification('✅ เริ่มขุดสำเร็จ! รายได้กำลังไหลเข้ามา');
+                startMining();
+                showNotification('✅ เริ่มขุดสำเร็จ!');
             } else {
-                button.textContent = '🚀 เริ่มขุด';
-                button.classList.remove('active');
-                status.textContent = '⏸️ หยุดขุดชั่วคราว';
+                btn.textContent = '🚀 เริ่มขุดเลย!';
+                btn.classList.remove('active');
+                status.textContent = 'พร้อมเริ่มขุด! กดปุ่มเพื่อเริ่ม';
+                stopMining();
                 showNotification('⏸️ หยุดขุดแล้ว');
             }
         }
 
-        // ระบบขุดรายได้
-        setInterval(() => {
-            if (gameData.isMining) {
-                const earnings = gameData.miningRate;
-                gameData.balance += earnings;
-                gameData.todayEarnings += earnings;
-                gameData.miningTime += 1; // นับวินาที
+        function startMining() {
+            miningInterval = setInterval(() => {
+                gameData.balance += gameData.miningRate;
+                gameData.todayEarnings += gameData.miningRate;
                 updateDisplay();
-                updateQuests();
-            }
-        }, 1000);
-
-        // อัปเดตกราฟทุกๆ 5 วินาที
-        setInterval(() => {
-            if (gameData.isMining) {
-                const time = new Date().toLocaleTimeString('th-TH');
                 
-                // อัปเดตกราฟรายได้
-                earningsChart.data.labels.push(time);
-                earningsChart.data.datasets[0].data.push(gameData.miningRate * 5);
-                if (earningsChart.data.labels.length > 20) {
-                    earningsChart.data.labels.shift();
-                    earningsChart.data.datasets[0].data.shift();
-                }
-                earningsChart.update();
+                // บันทึกทุก 10 วินาที
+                if (Math.random() < 0.1) saveData();
+            }, 1000);
+        }
 
-                // อัปเดตกราฟยอดเงิน
-                balanceChart.data.labels.push(time);
-                balanceChart.data.datasets[0].data.push(gameData.balance);
-                if (balanceChart.data.labels.length > 20) {
-                    balanceChart.data.labels.shift();
-                    balanceChart.data.datasets[0].data.shift();
-                }
-                balanceChart.update();
+        function stopMining() {
+            if (miningInterval) {
+                clearInterval(miningInterval);
+                miningInterval = null;
             }
-        }, 5000);
+        }
 
-        // แสดงผลข้อมูล
+        // ============ Display Update ============
         function updateDisplay() {
             document.getElementById('totalBalance').textContent = gameData.balance.toFixed(2);
             document.getElementById('miningRate').textContent = gameData.miningRate.toFixed(2);
             document.getElementById('todayEarnings').textContent = gameData.todayEarnings.toFixed(2);
             document.getElementById('totalPower').textContent = gameData.totalPower.toFixed(1);
+            document.getElementById('walletBalance').textContent = gameData.balance.toFixed(2);
+            document.getElementById('spinsLeft').textContent = gameData.spinsRemaining;
+            document.getElementById('referralCount').textContent = gameData.referrals.length;
+            document.getElementById('referralEarnings').textContent = gameData.referralEarnings.toFixed(2);
+            document.getElementById('transactionCount').textContent = gameData.transactions.length;
         }
 
-        // ซื้อเครื่องขุด
-        function buyMiner(minerId) {
-            const miner = miners.find(m => m.id === minerId);
-            if (gameData.balance >= miner.price) {
-                gameData.balance -= miner.price;
-                gameData.ownedMiners[minerId] = (gameData.ownedMiners[minerId] || 0) + 1;
-                gameData.miningRate += miner.rate;
-                gameData.totalPower += miner.power;
-                updateDisplay();
-                renderMiners();
-                updateQuests();
-                saveGame();
-                showNotification(`✅ ซื้อ ${miner.name} สำเร็จ! +${miner.rate} THB/วินาที`);
-            } else {
-                showNotification('❌ เงินไม่พอ! ขุดเพิ่มอีกนิดนะ');
-            }
-        }
+        // ============ Shop System ============
+        function renderShop() {
+            const grid = document.getElementById('shopGrid');
+            grid.innerHTML = '';
 
-        // แสดง Notification
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.style.display = 'block';
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 3000);
-        }
+            minerTypes.forEach(miner => {
+                const owned = gameData.miners.filter(m => m.id === miner.id).length;
+                const canBuy = gameData.balance >= miner.price || miner.price === 0;
 
-        // แสดงร้านค้า
-        function renderMiners() {
-            const container = document.getElementById('minersContainer');
-            container.innerHTML = '';
-            
-            miners.forEach(miner => {
-                const owned = gameData.ownedMiners[miner.id] || 0;
-                const canAfford = gameData.balance >= miner.price;
-                
                 const card = document.createElement('div');
                 card.className = 'miner-card';
                 card.innerHTML = `
-                    <div class="miner-info">
-                        <div class="miner-name">${miner.name} ${owned > 0 ? `(มี ${owned} เครื่อง)` : ''}</div>
-                        <div class="miner-power">⚡ พลัง: ${miner.power} MH/s | +${miner.rate} THB/วินาที</div>
-                    </div>
-                    <div class="miner-price">฿${miner.price.toLocaleString()}</div>
-                    <button class="buy-button" onclick="buyMiner(${miner.id})" ${!canAfford && miner.price > 0 ? 'disabled' : ''}>
-                        ${miner.price === 0 ? 'มีอยู่แล้ว' : 'ซื้อ'}
+                    <div style="text-align: center; font-size: 3em; margin-bottom: 10px;">${miner.icon}</div>
+                    <h3 style="text-align: center; margin-bottom: 10px;">${miner.name}</h3>
+                    <p style="opacity: 0.8; text-align: center;">
+                        ⚡ ${miner.power} MH/s<br>
+                        💰 ฿${miner.rate}/วินาที
+                    </p>
+                    <p style="text-align: center; font-size: 1.5em; color: #4ade80; margin: 15px 0;">
+                        ${miner.price === 0 ? 'ฟรี!' : '฿' + miner.price.toLocaleString()}
+                    </p>
+                    ${owned > 0 ? `<p style="text-align: center; opacity: 0.8;">มีแล้ว: ${owned} เครื่อง</p>` : ''}
+                    <button class="buy-btn" onclick="buyMiner('${miner.id}')" ${!canBuy || miner.price === 0 ? 'disabled' : ''}>
+                        ${miner.price === 0 ? 'มีแล้ว' : (canBuy ? 'ซื้อเลย' : 'เงินไม่พอ')}
                     </button>
                 `;
-                container.appendChild(card);
+                grid.appendChild(card);
             });
         }
 
-        // เริ่มต้นระบบ
-        updateDisplay();
-        renderMiners();
-        renderDailyRewards();
-        renderQuests();
-        checkDailyReset();
+        function buyMiner(id) {
+            const miner = minerTypes.find(m => m.id === id);
+            if (!miner || gameData.balance < miner.price) return;
 
-        // ฟังก์ชัน Daily Rewards
-        function renderDailyRewards() {
-            const container = document.getElementById('dailyRewardsContainer');
-            container.innerHTML = '';
+            gameData.balance -= miner.price;
+            gameData.totalPower += miner.power;
+            gameData.miningRate += miner.rate;
+            gameData.miners.push({ id: miner.id, name: miner.name });
+
+            addTransaction('purchase', -miner.price, `ซื้อ ${miner.name}`);
             
-            gameData.dailyRewards.forEach(reward => {
-                const card = document.createElement('div');
-                card.className = `reward-card ${reward.claimed ? 'claimed' : ''}`;
-                const isAvailable = reward.day === gameData.currentDay && !reward.claimed;
-                
-                card.innerHTML = `
-                    <div class="reward-icon">${reward.claimed ? '✅' : '🎁'}</div>
-                    <div class="reward-day">วันที่ ${reward.day}</div>
-                    <div class="reward-amount">฿${reward.amount.toLocaleString()}</div>
-                    <button class="claim-button" 
-                        ${!isAvailable ? 'disabled' : ''} 
-                        onclick="claimDailyReward(${reward.day})">
-                        ${reward.claimed ? 'รับแล้ว' : (isAvailable ? 'รับรางวัล' : 'ล็อก')}
-                    </button>
-                `;
-                
-                container.appendChild(card);
-            });
+            showNotification(`🎉 ซื้อ ${miner.name} สำเร็จ!`);
+            updateDisplay();
+            renderShop();
+            saveData();
         }
 
-        function claimDailyReward(day) {
-            const reward = gameData.dailyRewards.find(r => r.day === day);
-            if (reward && !reward.claimed && day === gameData.currentDay) {
-                reward.claimed = true;
-                gameData.balance += reward.amount;
-                gameData.lastClaimDate = new Date().toDateString();
+        // ============ Lucky Wheel ============
+        function spinWheel() {
+            if (gameData.spinsRemaining <= 0) {
+                showNotification('❌ หมุนครบแล้ววันนี้!');
+                return;
+            }
+
+            const wheel = document.getElementById('luckyWheel');
+            const btn = document.getElementById('spinBtn');
+            btn.disabled = true;
+
+            const randomPrize = wheelPrizes[Math.floor(Math.random() * wheelPrizes.length)];
+            const rotation = 360 * 5 + (Math.random() * 360);
+
+            wheel.style.transform = `rotate(${rotation}deg)`;
+
+            setTimeout(() => {
+                gameData.spinsRemaining--;
                 
-                // แสดง modal รางวัล
-                document.getElementById('rewardText').textContent = `คุณได้รับ ฿${reward.amount.toLocaleString()}!`;
-                document.getElementById('rewardModal').style.display = 'flex';
-                
+                if (randomPrize > 0) {
+                    gameData.balance += randomPrize;
+                    addTransaction('wheel', randomPrize, 'รางวัลจากวงล้อ');
+                    showNotification(`🎉 ยินดีด้วย! คุณได้ ฿${randomPrize}!`);
+                } else {
+                    showNotification('😢 เสียใจด้วย ลองใหม่!');
+                }
+
                 updateDisplay();
-                renderDailyRewards();
-                saveGame();
-            }
+                saveData();
+                btn.disabled = gameData.spinsRemaining <= 0;
+            }, 5000);
         }
 
-        function closeRewardModal() {
-            document.getElementById('rewardModal').style.display = 'none';
-        }
-
-        function checkDailyReset() {
-            const today = new Date().toDateString();
-            if (gameData.lastClaimDate && gameData.lastClaimDate !== today) {
-                // เช็คว่ารับรางวัลเมื่อวาน หรือข้ามไป
-                const lastDate = new Date(gameData.lastClaimDate);
-                const currentDate = new Date(today);
-                const daysDiff = Math.floor((currentDate - lastDate) / (1000 * 60 * 60 * 24));
-                
-                if (daysDiff === 1 && gameData.dailyRewards[gameData.currentDay - 1].claimed) {
-                    // วันต่อเนื่อง
-                    if (gameData.currentDay < 7) {
-                        gameData.currentDay++;
-                    } else {
-                        // รีเซ็ตกลับเริ่มใหม่
-                        gameData.currentDay = 1;
-                        gameData.dailyRewards.forEach(r => r.claimed = false);
-                    }
-                } else if (daysDiff > 1) {
-                    // ข้ามวัน - รีเซ็ต
-                    gameData.currentDay = 1;
-                    gameData.dailyRewards.forEach(r => r.claimed = false);
-                }
-                
-                // รีเซ็ต quests
-                gameData.quests.forEach(q => {
-                    q.progress = 0;
-                    q.completed = false;
-                });
-                gameData.todayEarnings = 0;
-                gameData.miningTime = 0;
-            }
-        }
-
-        // ฟังก์ชัน Quests
-        function renderQuests() {
-            const container = document.getElementById('questsContainer');
-            container.innerHTML = '';
-            
-            gameData.quests.forEach(quest => {
-                const card = document.createElement('div');
-                card.className = 'quest-card';
-                const progress = Math.min(100, (quest.progress / quest.goal) * 100);
-                
-                card.innerHTML = `
-                    <div class="quest-header">
-                        <div class="quest-title">${quest.completed ? '✅' : '🎯'} ${quest.title}</div>
-                        <div class="quest-reward">+฿${quest.reward}</div>
-                    </div>
-                    <div class="quest-description">${quest.description}</div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: ${progress}%">
-                            ${progress.toFixed(0)}%
-                        </div>
-                    </div>
-                    <div class="quest-status ${quest.completed ? 'quest-completed' : ''}">
-                        ${quest.completed ? '✅ เควสสำเร็จ! รับรางวัลแล้ว' : `ความคืบหน้า: ${quest.progress}/${quest.goal}`}
-                    </div>
-                `;
-                
-                container.appendChild(card);
+        // ============ Wallet & Transactions ============
+        function addTransaction(type, amount, desc) {
+            gameData.transactions.push({
+                type,
+                amount,
+                desc,
+                date: new Date().toLocaleString('th-TH')
             });
+            updateWallet();
         }
 
-        function updateQuests() {
-            gameData.quests.forEach(quest => {
-                if (!quest.completed) {
-                    switch(quest.id) {
-                        case 1: // เริ่มต้นขุด
-                            if (gameData.isMining) {
-                                quest.progress = 1;
-                            }
-                            break;
-                        case 2: // ขุดติดต่อกัน 5 นาที
-                            quest.progress = gameData.miningTime;
-                            break;
-                        case 3: // รายได้ 1,000 บาท
-                            quest.progress = Math.floor(gameData.todayEarnings);
-                            break;
-                        case 4: // ซื้อเครื่องขุด
-                            const totalMiners = Object.values(gameData.ownedMiners).reduce((a, b) => a + b, 0);
-                            quest.progress = totalMiners - 1; // ลบเครื่องแรกที่ได้มาฟรี
-                            break;
-                        case 5: // พลังขุด 50 MH/s
-                            quest.progress = Math.floor(gameData.totalPower);
-                            break;
-                    }
-                    
-                    // เช็คว่าทำเควสสำเร็จหรือยัง
-                    if (quest.progress >= quest.goal && !quest.completed) {
-                        quest.completed = true;
-                        gameData.balance += quest.reward;
-                        showNotification(`🎉 เควสสำเร็จ! "${quest.title}" +฿${quest.reward}`);
-                    }
-                }
-            });
+        function updateWallet() {
+            const list = document.getElementById('transactionList');
             
-            renderQuests();
-        }
-
-        function saveGame() {
-            localStorage.setItem('miningGameData', JSON.stringify(gameData));
-        }
-
-        // บันทึกข้อมูลอัตโนมัติ
-        setInterval(() => {
-            saveGame();
-        }, 10000);
-
-        // ฟังก์ชัน Logout
-        function logout() {
-            if (confirm('คุณต้องการออกจากระบบใช่หรือไม่?')) {
-                // บันทึกข้อมูลก่อน logout
-                saveGame();
-                
-                // ลบ session
-                localStorage.removeItem('userSession');
-                localStorage.removeItem('token');
-                
-                // แสดง notification
-                showNotification('👋 ออกจากระบบสำเร็จ!');
-                
-                // รอ 1 วินาทีแล้วไปหน้า login
-                setTimeout(() => {
-                    window.location.href = 'login-register.html';
-                }, 1000);
+            if (gameData.transactions.length === 0) {
+                list.innerHTML = '<p style="text-align: center; opacity: 0.6;">ยังไม่มีรายการ</p>';
+                return;
             }
+
+            list.innerHTML = gameData.transactions.slice(-10).reverse().map(t => `
+                <div class="transaction-item">
+                    <div>
+                        <div style="font-weight: bold;">${t.desc}</div>
+                        <div style="font-size: 0.9em; opacity: 0.7;">${t.date}</div>
+                    </div>
+                    <div style="font-size: 1.3em; font-weight: bold; color: ${t.amount >= 0 ? '#4ade80' : '#ef4444'};">
+                        ${t.amount >= 0 ? '+' : ''}฿${Math.abs(t.amount).toFixed(2)}
+                    </div>
+                </div>
+            `).join('');
         }
 
-        // โหลดชื่อผู้ใช้
+        // ============ Referral System ============
+        function generateReferralCode() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let code = '';
+            for (let i = 0; i < 8; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+
+        function copyReferralCode() {
+            const code = document.getElementById('referralCode').textContent;
+            navigator.clipboard.writeText(code);
+            showNotification('📋 คัดลอกรหัสสำเร็จ!');
+        }
+
+        // ============ User Info ============
         function loadUserInfo() {
             const userSession = localStorage.getItem('userSession');
             if (userSession) {
@@ -1041,29 +821,65 @@
             }
         }
 
-        // โหลดข้อมูลเดิม
-        const savedData = localStorage.getItem('miningGameData');
-        if (savedData) {
-            const loaded = JSON.parse(savedData);
-            gameData.balance = loaded.balance || 0;
-            gameData.todayEarnings = loaded.todayEarnings || 0;
-            gameData.miningRate = loaded.miningRate || 0.10;
-            gameData.totalPower = loaded.totalPower || 1.0;
-            gameData.ownedMiners = loaded.ownedMiners || {1: 1};
-            gameData.lastClaimDate = loaded.lastClaimDate || null;
-            gameData.currentDay = loaded.currentDay || 1;
-            gameData.dailyRewards = loaded.dailyRewards || gameData.dailyRewards;
-            gameData.quests = loaded.quests || gameData.quests;
-            gameData.miningTime = loaded.miningTime || 0;
-            updateDisplay();
-            renderMiners();
-            renderDailyRewards();
-            renderQuests();
-            checkDailyReset();
+        // ============ Logout ============
+        function logout() {
+            if (confirm('คุณต้องการออกจากระบบใช่หรือไม่?')) {
+                saveData();
+                localStorage.removeItem('userSession');
+                localStorage.removeItem('token');
+                showNotification('👋 ออกจากระบบสำเร็จ!');
+                setTimeout(() => {
+                    window.location.href = 'login-register.html';
+                }, 1000);
+            }
         }
 
-        // โหลดข้อมูลผู้ใช้
-        loadUserInfo();
+        // ============ Save/Load Data ============
+        function saveData() {
+            localStorage.setItem('cryptoMiningAllInOne', JSON.stringify(gameData));
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('cryptoMiningAllInOne');
+            if (saved) {
+                const loaded = JSON.parse(saved);
+                gameData = { ...gameData, ...loaded };
+            }
+
+            // สร้างรหัสแนะนำถ้ายังไม่มี
+            if (!gameData.referralCode) {
+                gameData.referralCode = generateReferralCode();
+            }
+
+            // เริ่มต้นด้วยเครื่องขุดฟรี
+            if (gameData.miners.length === 0) {
+                gameData.miners.push({ id: 'starter', name: 'มือใหม่' });
+            }
+
+            document.getElementById('referralCode').textContent = gameData.referralCode;
+            updateDisplay();
+            renderShop();
+            updateWallet();
+        }
+
+        // ============ Notification ============
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // ============ เริ่มต้น ============
+        window.addEventListener('load', () => {
+            loadUserInfo();
+            loadData();
+            setInterval(saveData, 10000); // บันทึกทุก 10 วินาที
+        });
+
+        console.log('⛏️ Crypto Mining Pro - All-in-One Loaded! 🚀');
     </script>
 </body>
 </html>
