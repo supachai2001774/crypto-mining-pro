@@ -5,6 +5,7 @@ const translations = {
         subtitle: 'ขุดรายได้ รับเงินจริง',
         theme: 'Dark Mode',
         vipFree: '👤 Free User',
+        logout: 'ออกจากระบบ',
         totalBalance: 'ยอดเงินรวม',
         canWithdraw: 'ถอนได้ทันที',
         miningRate: 'อัตราการขุด',
@@ -38,6 +39,7 @@ const translations = {
         subtitle: 'Mine & Earn Real Money',
         theme: 'Light Mode',
         vipFree: '👤 Free User',
+        logout: 'Logout',
         totalBalance: 'Total Balance',
         canWithdraw: 'Available Now',
         miningRate: 'Mining Rate',
@@ -528,6 +530,41 @@ function updateVIPStatus() {
     }
 }
 
+// ============ Logout ============
+function logout() {
+    if (confirm(currentLang === 'th' ? 'คุณต้องการออกจากระบบใช่หรือไม่?' : 'Are you sure you want to logout?')) {
+        // บันทึกข้อมูลก่อน logout
+        saveData();
+        
+        // ลบ session
+        localStorage.removeItem('userSession');
+        localStorage.removeItem('token');
+        
+        // แสดง notification
+        showNotification(currentLang === 'th' ? '👋 ออกจากระบบสำเร็จ!' : '👋 Logout successful!');
+        
+        // รอ 1 วินาทีแล้วไปหน้า login
+        setTimeout(() => {
+            window.location.href = 'login-register.html';
+        }, 1000);
+    }
+}
+
+// โหลดชื่อผู้ใช้
+function loadUserInfo() {
+    const userSession = localStorage.getItem('userSession');
+    if (userSession) {
+        try {
+            const user = JSON.parse(userSession);
+            document.getElementById('username').textContent = user.username || user.email || (currentLang === 'th' ? 'ผู้ใช้งาน' : 'User');
+        } catch (e) {
+            document.getElementById('username').textContent = currentLang === 'th' ? 'ผู้ใช้งาน' : 'User';
+        }
+    } else {
+        document.getElementById('username').textContent = currentLang === 'th' ? 'ผู้ใช้งาน' : 'User';
+    }
+}
+
 // ============ เริ่มต้น ============
 window.addEventListener('load', () => {
     if (!isDarkMode) {
@@ -536,6 +573,7 @@ window.addEventListener('load', () => {
     }
     
     setLanguage(currentLang);
+    loadUserInfo();
     loadData();
     renderShop();
     renderDailyRewards();
