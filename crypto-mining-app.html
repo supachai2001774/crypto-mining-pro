@@ -46,6 +46,52 @@
             opacity: 0.9;
         }
 
+        .header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding: 0 20px;
+        }
+
+        .user-info {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+        }
+
+        .logout-btn:active {
+            transform: translateY(0);
+        }
+
         .dashboard {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -250,6 +296,20 @@
                 padding: 15px 40px;
                 font-size: 1.1em;
             }
+
+            .header-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .user-info {
+                justify-content: center;
+            }
+
+            .logout-btn {
+                width: 100%;
+                justify-content: center;
+            }
         }
 
         .notification {
@@ -283,6 +343,17 @@
         <div class="header">
             <h1>⛏️ Crypto Mining Pro</h1>
             <p>ขุดรายได้แบบเรียลไทม์ | รายได้จริง กำไรชัวร์</p>
+            
+            <div class="header-controls">
+                <div class="user-info">
+                    <span>👤</span>
+                    <span id="username">ผู้ใช้งาน</span>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <span>🚪</span>
+                    <span>ออกจากระบบ</span>
+                </button>
+            </div>
         </div>
 
         <div class="dashboard">
@@ -935,6 +1006,41 @@
             saveGame();
         }, 10000);
 
+        // ฟังก์ชัน Logout
+        function logout() {
+            if (confirm('คุณต้องการออกจากระบบใช่หรือไม่?')) {
+                // บันทึกข้อมูลก่อน logout
+                saveGame();
+                
+                // ลบ session
+                localStorage.removeItem('userSession');
+                localStorage.removeItem('token');
+                
+                // แสดง notification
+                showNotification('👋 ออกจากระบบสำเร็จ!');
+                
+                // รอ 1 วินาทีแล้วไปหน้า login
+                setTimeout(() => {
+                    window.location.href = 'login-register.html';
+                }, 1000);
+            }
+        }
+
+        // โหลดชื่อผู้ใช้
+        function loadUserInfo() {
+            const userSession = localStorage.getItem('userSession');
+            if (userSession) {
+                try {
+                    const user = JSON.parse(userSession);
+                    document.getElementById('username').textContent = user.username || user.email || 'ผู้ใช้งาน';
+                } catch (e) {
+                    document.getElementById('username').textContent = 'ผู้ใช้งาน';
+                }
+            } else {
+                document.getElementById('username').textContent = 'ผู้ใช้งาน';
+            }
+        }
+
         // โหลดข้อมูลเดิม
         const savedData = localStorage.getItem('miningGameData');
         if (savedData) {
@@ -955,6 +1061,9 @@
             renderQuests();
             checkDailyReset();
         }
+
+        // โหลดข้อมูลผู้ใช้
+        loadUserInfo();
     </script>
 </body>
 </html>
