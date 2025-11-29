@@ -6,129 +6,333 @@
     <title>🔐 เข้าสู่ระบบ - Crypto Mining Pro</title>
     <script src="global.js"></script>
     <style>
-        /* (Style เดิม ไม่ต้องแก้) */
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
         .container { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border-radius: 25px; padding: 40px; width: 100%; max-width: 450px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.2); color: white; }
-        .logo { text-align: center; margin-bottom: 30px; }
-        .logo-icon { font-size: 4em; margin-bottom: 10px; }
-        .logo h1 { font-size: 2em; margin-bottom: 5px; }
-        .logo p { font-size: 0.9em; opacity: 0.8; }
-        .tabs { display: flex; gap: 10px; margin-bottom: 30px; }
-        .tab { flex: 1; padding: 15px; background: rgba(255, 255, 255, 0.1); border: none; border-radius: 10px; color: white; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: all 0.3s ease; }
-        .tab.active { background: linear-gradient(135deg, #10b981, #059669); box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4); }
-        .tab:hover { background: rgba(255, 255, 255, 0.2); }
-        .form-container { display: none; }
-        .form-container.active { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .form-group { margin-bottom: 20px; }
-        .form-label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 0.95em; }
-        .form-input { width: 100%; padding: 15px; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 10px; background: rgba(255, 255, 255, 0.1); color: white; font-size: 1em; transition: all 0.3s ease; }
-        .form-input:focus { outline: none; border-color: #10b981; background: rgba(255, 255, 255, 0.15); }
-        .submit-btn { width: 100%; padding: 15px; border: none; border-radius: 10px; background: linear-gradient(135deg, #10b981, #059669); color: white; font-size: 1.1em; font-weight: bold; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(16, 185, 129, 0.4); }
-        .submit-btn:hover { transform: translateY(-2px); box-shadow: 0 7px 20px rgba(16, 185, 129, 0.6); }
-        .alert { padding: 12px 15px; border-radius: 10px; margin-bottom: 20px; font-size: 0.9em; display: none; }
-        .alert.success { background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.5); color: #4ade80; }
-        .alert.error { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); color: #fca5a5; }
+        /* รีเซ็ตและฐาน */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root{
+            --bg1:#0f172a;         /* slate-900 */
+            --bg2:#1e293b;         /* slate-800 */
+            --primary:#22d3ee;     /* cyan-400 */
+            --primary-2:#06b6d4;   /* cyan-500 */
+            --accent:#a78bfa;      /* violet-400 */
+            --success:#34d399;     /* emerald-400 */
+            --error:#f87171;       /* red-400 */
+            --white: #ffffff;
+        }
+        html, body { height: 100%; }
+        body{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--white);
+            background: radial-gradient(1000px 600px at 10% 10%, rgba(34,211,238,0.08), transparent 60%),
+                        radial-gradient(900px 500px at 90% 20%, rgba(167,139,250,0.08), transparent 60%),
+                        radial-gradient(1200px 700px at 50% 90%, rgba(52,211,153,0.08), transparent 60%),
+                        linear-gradient(135deg, var(--bg1), var(--bg2));
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            overflow-x: hidden;
+        }
+
+        /* เอฟเฟกต์เส้นแสงวิ่ง */
+        .beams{
+            position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 0;
+            filter: blur(20px) saturate(120%);
+        }
+        .beam{
+            position: absolute; width: 2px; height: 160vh; top: -30vh; background: linear-gradient(to bottom, transparent, rgba(34,211,238,0.45), transparent);
+            animation: fall 10s linear infinite; opacity: .6;
+        }
+        .beam:nth-child(2){ left: 20%; animation-duration: 12s; background: linear-gradient(to bottom, transparent, rgba(167,139,250,.45), transparent); }
+        .beam:nth-child(3){ left: 40%; animation-duration: 9s; }
+        .beam:nth-child(4){ left: 60%; animation-duration: 13s; background: linear-gradient(to bottom, transparent, rgba(52,211,153,.45), transparent); }
+        .beam:nth-child(5){ left: 80%; animation-duration: 11s; }
+        @keyframes fall{ to{ transform: translateY(30vh); } }
+
+        /* กล่องหลักแบบแก้ว (Glassmorphism) */
+        .shell{
+            position: relative;
+            z-index: 1;
+            width: min(920px, 92vw);
+            display: grid;
+            grid-template-columns: 1.1fr 1fr;
+            gap: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+            border: 1px solid rgba(255,255,255,.15);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.06);
+            overflow: hidden;
+        }
+        /* แผงด้านซ้าย - แบรนด์ */
+        .brand-panel{
+            position: relative;
+            padding: clamp(28px, 4.2vw, 44px);
+            background: radial-gradient(900px 500px at -10% -10%, rgba(34,211,238,0.12), transparent 60%),
+                        radial-gradient(700px 400px at 110% 50%, rgba(167,139,250,0.12), transparent 60%),
+                        linear-gradient(160deg, rgba(2,6,23,.3), rgba(2,6,23,.1));
+            border-right: 1px solid rgba(255,255,255,.12);
+        }
+        .badge{ display:inline-flex; align-items:center; gap:8px; font-size:.82rem; color:#d1fae5; background: rgba(16,185,129,.15); border:1px solid rgba(16,185,129,.35); padding:6px 10px; border-radius:999px; }
+        .logo-mark{ font-size: 40px; filter: drop-shadow(0 6px 14px rgba(34,211,238,.35)); }
+        .brand-title{ font-size: clamp(28px, 4vw, 36px); font-weight: 800; line-height: 1.15; margin-top: 14px; }
+        .brand-sub{ margin-top: 10px; color:#c7d2fe; opacity:.9; font-size: .98rem; }
+        .stats{ display:flex; gap:16px; margin-top: 24px; flex-wrap: wrap; }
+        .stat{
+            flex:1 1 120px; min-width:120px; padding:12px 14px; border-radius:14px;
+            background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+            border:1px solid rgba(255,255,255,.12);
+        }
+        .stat h4{ font-size: 1.1rem; }
+        .stat p{ opacity:.8; font-size:.86rem; margin-top:4px; }
+        .brand-footer{ margin-top: 26px; display:flex; align-items:center; gap:10px; opacity:.85; font-size:.88rem; }
+
+        /* แผงฟอร์มด้านขวา */
+        .form-panel{ position: relative; padding: clamp(24px, 4vw, 40px); backdrop-filter: blur(6px); }
+        .tabs{ display:flex; gap:10px; background: rgba(255,255,255,.06); padding:8px; border-radius: 14px; border:1px solid rgba(255,255,255,.12); }
+        .tab{ flex:1; position:relative; border:0; border-radius:10px; padding:12px 14px; color:#e2e8f0; font-weight:700; background: transparent; cursor:pointer; transition:.25s ease; }
+        .tab.active{ color:#0b1220; }
+        .tab .pill{ position:absolute; inset:0; border-radius:10px; background: linear-gradient(135deg, var(--primary), var(--accent)); transform: scale(.98); opacity:0; transition:.25s ease; z-index:-1; }
+        .tab.active .pill{ opacity:1; }
+
+        .form-wrap{ margin-top: 18px; }
+        .alert{ display:none; margin-bottom: 14px; padding: 12px 14px; border-radius: 12px; font-size:.92rem; border:1px solid; }
+        .alert.success{ display:block; color:#bbf7d0; background: rgba(16,185,129,.12); border-color: rgba(16,185,129,.35); }
+        .alert.error{ display:block; color:#fecaca; background: rgba(239,68,68,.12); border-color: rgba(239,68,68,.35); }
+
+        form{ display:grid; gap: 16px; }
+        .row{ display:flex; gap:12px; align-items:center; justify-content:space-between; }
+
+        /* กลุ่มอินพุตแบบ Floating Label + ไอคอน */
+        .field{ position: relative; }
+        .field input{
+            width:100%; padding: 16px 46px 16px 44px; border-radius: 12px; border:1px solid rgba(255,255,255,.18);
+            background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+            color: #eef2ff; outline: none; transition: .25s ease; font-size: 0.98rem;
+        }
+        .field input::placeholder{ color: transparent; }
+        .field input:focus{ border-color: rgba(34,211,238,.55); box-shadow: 0 0 0 4px rgba(34,211,238,.12); }
+        .field label{
+            position: absolute; left: 44px; top: 50%; transform: translateY(-50%);
+            color:#cbd5e1; pointer-events: none; transition: .2s ease; background: transparent; padding:0 6px; border-radius: 4px; font-size: .94rem;
+        }
+        .field input:focus + label,
+        .field input:not(:placeholder-shown) + label{
+            top: 0; transform: translateY(-50%) scale(.92);
+            background: rgba(2,6,23,.8); color:#94a3b8;
+        }
+        .icon-left{ position:absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 18px; opacity:.9; }
+        .icon-right{ position:absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 16px; opacity:.9; cursor:pointer; }
+
+        .helper{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top: -4px; }
+        .remember{ display:flex; align-items:center; gap:8px; font-size:.92rem; color:#cbd5e1; }
+        .remember input{ accent-color: var(--primary-2); }
+        .link{ color: var(--primary); text-decoration: none; font-weight: 600; }
+        .link:hover{ text-decoration: underline; }
+
+        .submit-btn{
+            width:100%; padding: 14px 16px; border:0; border-radius: 12px; cursor:pointer; font-weight:800; color:#06101a;
+            background: linear-gradient(135deg, var(--primary), var(--accent)); box-shadow: 0 10px 26px rgba(6,182,212,.35);
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+        .submit-btn:hover{ transform: translateY(-1.5px); box-shadow: 0 14px 36px rgba(6,182,212,.45); }
+
+        
+        .fineprint{ margin-top: 12px; color:#94a3b8; font-size:.85rem; text-align:center; }
+
+        /* ตอบสนองหน้าจอเล็ก */
+        @media (max-width: 860px){
+            .shell{ grid-template-columns: 1fr; }
+            .brand-panel{ display:none; }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">
-            <div class="logo-icon">⛏️</div>
-            <h1>Crypto Mining Pro</h1>
-            <p>ขุดรายได้ รับเงินจริง</p>
-        </div>
-        <div class="alert" id="alert"></div>
-        <div class="tabs">
-            <button class="tab active" onclick="switchTab('login')">เข้าสู่ระบบ</button>
-            <button class="tab" onclick="switchTab('register')">สมัครสมาชิก</button>
-        </div>
-
-        <div id="loginForm" class="form-container active">
-            <form onsubmit="handleLogin(event)">
-                <div class="form-group">
-                    <label class="form-label">📧 อีเมล</label>
-                    <input type="email" class="form-input" placeholder="อีเมล" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">🔒 รหัสผ่าน</label>
-                    <input type="password" class="form-input" placeholder="รหัสผ่าน" required>
-                </div>
-                <button type="submit" class="submit-btn">🚀 เข้าสู่ระบบ</button>
-            </form>
-        </div>
-
-        <div id="registerForm" class="form-container">
-            <form onsubmit="handleRegister(event)">
-                <div class="form-group">
-                    <label class="form-label">👤 ชื่อผู้ใช้</label>
-                    <input type="text" class="form-input" id="regUsername" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">📧 อีเมล</label>
-                    <input type="email" class="form-input" id="regEmail" required>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">🔒 รหัสผ่าน</label>
-                    <input type="password" class="form-input" id="regPassword" required>
-                </div>
-                <button type="submit" class="submit-btn">📝 สมัครสมาชิก</button>
-            </form>
-        </div>
+    <!-- เส้นแสงวิ่งพื้นหลัง -->
+    <div class="beams" aria-hidden="true">
+        <div class="beam" style="left:10%"></div>
+        <div class="beam"></div>
+        <div class="beam"></div>
+        <div class="beam"></div>
+        <div class="beam"></div>
     </div>
 
+    <main class="shell" role="main">
+        <!-- แบรนด์/การตลาด -->
+        <section class="brand-panel">
+            <span class="badge"><span class="logo-mark">⛏️</span> Crypto Mining Pro</span>
+            <h1 class="brand-title">ขุดรายได้ดิจิทัลได้ง่าย ปลอดภัย และรวดเร็ว</h1>
+            <p class="brand-sub">แพลตฟอร์มจำลองการขุดที่ออกแบบมาเพื่อความสะดวกในการเรียนรู้และทดลอง พร้อมอินเตอร์เฟซที่ทั���สมัย</p>
+            <div class="stats">
+                <div class="stat">
+                    <h4>⚡ เริ่มต้นไว</h4>
+                    <p>ล็อกอินแล้วใช้งานได้ทันที</p>
+                </div>
+                <div class="stat">
+                    <h4>🔒 ปลอดภัย</h4>
+                    <p>เก็บข้อมูลในเครื่องคุณ</p>
+                </div>
+                <div class="stat">
+                    <h4>🎯 ใช้ง่าย</h4>
+                    <p>ออกแบบเพื่อผู้เริ่มต้น</p>
+                </div>
+            </div>
+            <div class="brand-footer">สร้างพอร์ตจำลองของคุณได้ในไม่กี่คลิก</div>
+        </section>
+
+        <!-- ฟอร์ม -->
+        <section class="form-panel">
+            <div class="tabs" role="tablist">
+                <button class="tab active" data-tab="login" aria-selected="true" role="tab">
+                    <span class="pill"></span>เข้าสู่ระบบ
+                </button>
+                <button class="tab" data-tab="register" aria-selected="false" role="tab">
+                    <span class="pill"></span>สมัครสมาชิก
+                </button>
+            </div>
+
+            <div class="form-wrap">
+                <div id="alert" class="alert" role="status" aria-live="polite"></div>
+
+                <!-- เข้าสู่���ะบบ -->
+                <form id="loginForm" class="form-container" autocomplete="on">
+                    <div class="field">
+                        <span class="icon-left">📧</span>
+                        <input id="loginEmail" type="email" placeholder="อีเมล" required>
+                        <label for="loginEmail">อีเมล</label>
+                    </div>
+                    <div class="field">
+                        <span class="icon-left">🔒</span>
+                        <input id="loginPassword" type="password" placeholder="รหัสผ่าน" required>
+                        <label for="loginPassword">รหัสผ่าน</label>
+                        <span class="icon-right" id="toggleLoginPw" title="แสดง/ซ่อนรหัส">👁️</span>
+                    </div>
+
+                    <div class="helper">
+                        <label class="remember"><input id="rememberMe" type="checkbox"> จดจำฉันไว้</label>
+                        <a class="link" href="#" onclick="event.preventDefault(); showAlert('success','เคล็ดลับ: สมัครสมาชิกใหม่ได้ทันทีด้านบน');">ลืมรหัสผ่าน?</a>
+                    </div>
+
+                    <button type="submit" class="submit-btn">🚀 เข้าสู่ระบบ</button>
+
+                                    </form>
+
+                <!-- สมัครสมาชิก -->
+                <form id="registerForm" class="form-container" style="display:none">
+                    <div class="field">
+                        <span class="icon-left">👤</span>
+                        <input id="regUsername" type="text" placeholder="���ื่อผู้ใช้" required>
+                        <label for="regUsername">ชื่อผู้ใช้</label>
+                    </div>
+                    <div class="field">
+                        <span class="icon-left">📧</span>
+                        <input id="regEmail" type="email" placeholder="อีเมล" required>
+                        <label for="regEmail">อีเมล</label>
+                    </div>
+                    <div class="field">
+                        <span class="icon-left">🔒</span>
+                        <input id="regPassword" type="password" placeholder="รหัสผ่าน" required>
+                        <label for="regPassword">รหัสผ่าน</label>
+                        <span class="icon-right" id="toggleRegPw" title="แสดง/ซ่อนรหัส">👁️</span>
+                    </div>
+
+                    <button type="submit" class="submit-btn">📝 สมัครสมาชิก</button>
+                    <p class="fineprint">การสมัครถือว่ายอมรับนโยบายการใช้งานจำลอ���</p>
+                </form>
+            </div>
+        </section>
+    </main>
+
     <script>
+        // เก็บผู้ใช้ใน LocalStorage (เดโม)
         let users = JSON.parse(localStorage.getItem('users')) || [];
 
-        function switchTab(tab) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-            document.querySelectorAll('.form-container').forEach(f => f.classList.remove('active'));
-            document.getElementById(tab + 'Form').classList.add('active');
-        }
+        // สลับแท็บด้วยปุ่ม
+        const tabs = document.querySelectorAll('.tab');
+        const loginFormEl = document.getElementById('loginForm');
+        const registerFormEl = document.getElementById('registerForm');
 
-        function handleLogin(e) {
+        tabs.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabs.forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected','false'); });
+                btn.classList.add('active');
+                btn.setAttribute('aria-selected','true');
+                const tab = btn.dataset.tab;
+                if(tab === 'login'){
+                    loginFormEl.style.display = 'grid';
+                    registerFormEl.style.display = 'none';
+                }else{
+                    loginFormEl.style.display = 'none';
+                    registerFormEl.style.display = 'grid';
+                }
+                document.getElementById('alert').style.display = 'none';
+            });
+        });
+
+        // โชว์/ซ่อนรหัสผ่าน
+        const toggleLoginPw = document.getElementById('toggleLoginPw');
+        const loginPw = document.getElementById('loginPassword');
+        toggleLoginPw && toggleLoginPw.addEventListener('click', () => {
+            loginPw.type = loginPw.type === 'password' ? 'text' : 'password';
+        });
+        const toggleRegPw = document.getElementById('toggleRegPw');
+        const regPw = document.getElementById('regPassword');
+        toggleRegPw && toggleRegPw.addEventListener('click', () => {
+            regPw.type = regPw.type === 'password' ? 'text' : 'password';
+        });
+
+        // จัดการ Login
+        loginFormEl.addEventListener('submit', function(e){
             e.preventDefault();
-            const email = e.target[0].value;
-            const password = e.target[1].value;
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const remember = document.getElementById('rememberMe').checked;
 
-            // Login แบบง่ายๆ (ให้ผ่านหมดเพื่อทดสอบ หรือจะเช็คจริงก็ได้)
-            const user = users.find(u => u.email === email && u.password === password) || { username: 'User', email: email };
-            
-            // บันทึก Session
+            const user = users.find(u => u.email === email && u.password === password) || { username: email.split('@')[0] || 'User', email };
+
             localStorage.setItem('userSession', JSON.stringify(user));
-            
-            showAlert('success', `ยินดีต้อนรับ ${user.username}! กำลังเข้าสู่ระบบ...`);
-            
-            // *** จุดสำคัญ: เปลี่ยนจาก crypto-mining-app.html เป็น index.html ***
-            setTimeout(() => {
-                window.location.href = 'crypto-mining-app.html'; 
-            }, 1500);
-        }
+            if(remember){ localStorage.setItem('rememberEmail', email); } else { localStorage.removeItem('rememberEmail'); }
 
-        function handleRegister(e) {
+            showAlert('success', `ยินดีต้อนรับ ${user.username}! กำลังเข้าสู่ระบบ...`);
+            setTimeout(() => { window.location.href = 'crypto-mining-app.html'; }, 1200);
+        });
+
+        // จัดการ Register
+        registerFormEl.addEventListener('submit', function(e){
             e.preventDefault();
-            const username = document.getElementById('regUsername').value;
-            const email = document.getElementById('regEmail').value;
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
             const password = document.getElementById('regPassword').value;
+
+            if(users.some(u => u.email === email)){
+                showAlert('error', 'อีเมลนี้ถูกใช้แล้ว');
+                return;
+            }
 
             users.push({ username, email, password });
             localStorage.setItem('users', JSON.stringify(users));
-            
-            showAlert('success', 'สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบ');
-            setTimeout(() => { switchTab('login'); }, 1500);
+            showAlert('success', 'สมัครสมาชิกสำเร��จ! กรุณาเข้าสู่ระบบ');
+
+            // สลับไปหน้า Login อัตโนมัติ
+            const loginTabBtn = Array.from(tabs).find(b => b.dataset.tab === 'login');
+            loginTabBtn?.click();
+        });
+
+        // แสดงข้อความแจ้งเตือน
+        function showAlert(type, message){
+            const a = document.getElementById('alert');
+            a.className = `alert ${type}`;
+            a.textContent = message;
+            a.style.display = 'block';
         }
 
-        function showAlert(type, message) {
-            const alert = document.getElementById('alert');
-            alert.className = `alert ${type}`;
-            alert.textContent = message;
-            alert.style.display = 'block';
+        // เติมอีเมลเมื่อเคยจำไว้
+        const remembered = localStorage.getItem('rememberEmail');
+        if(remembered){
+            document.getElementById('loginEmail').value = remembered;
+            document.getElementById('rememberMe').checked = true;
         }
 
-        // ถ้าล็อกอินอยู่แล้ว ให้ไปหน้า index เลย
-        if(localStorage.getItem('userSession')) {
+        // ถ้าล็อกอินอยู่แล้ว ให้ไปหน้า app เลย
+        if(localStorage.getItem('userSession')){
             window.location.href = 'crypto-mining-app.html';
         }
     </script>
