@@ -221,6 +221,13 @@
             gap: 20px;
             margin-bottom: 30px;
         }
+        /* Force 2 cards per row on small screens */
+        @media (max-width: 540px) {
+            #shop .shop-grid { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+            #shop .miner-card { padding: 18px; }
+            .dashboard { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+            .stat-card { padding: 18px; }
+        }
 
         .miner-card {
             background: rgba(255, 255, 255, 0.15);
@@ -234,6 +241,15 @@
             transform: translateY(-5px);
             border: 2px solid #10b981;
         }
+        .miner-thumb{ position:relative; width:100%; aspect-ratio: 16/9; border-radius:12px; overflow:hidden; background: linear-gradient(135deg,#0ea5e9,#22d3ee); display:grid; place-items:center; }
+        .miner-thumb svg{ width:72%; height:auto; opacity:.9; }
+        .badge{ position:absolute; top:10px; left:10px; background: rgba(2,6,23,.7); border:1px solid rgba(148,163,184,.35); color:#e2e8f0; padding:4px 8px; border-radius:999px; font-size:.78rem; font-weight:800; }
+        .miner-meta{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:12px; }
+        .miner-meta .left{ color:#cbd5e1; font-weight:800; }
+        .miner-meta .left small{ display:block; opacity:.8; font-weight:600; }
+        .price-line{ text-align:right; }
+        .price-line .price{ font-weight:900; color:#4ade80; font-size:1.1rem; }
+        .owned{ margin-top:6px; opacity:.75; font-size:.9rem; text-align:center; }
 
         .buy-btn {
             width: 100%;
@@ -253,8 +269,9 @@
         }
 
         .buy-btn:disabled {
-            background: gray;
-            opacity: 0.5;
+            background: rgba(148,163,184,0.25);
+            color: #cbd5e1;
+            opacity: 1;
             cursor: not-allowed;
         }
 
@@ -446,6 +463,57 @@
             box-shadow: 0 6px 22px rgba(6,182,212,0.35);
         }
 
+        /* Frame 2 mode */
+        .frame-2 .summary{ display:none !important; }
+        .frame-2 .container{ max-width: 430px; margin: 0 auto; }
+        .frame-2 .shop-grid{ grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+        .frame-2 .miner-card{ padding: 18px; border-radius: 18px; }
+        @media (max-width: 480px){ .frame-2 .container{ padding-left: 12px; padding-right: 12px; } }
+
+        /* Account panel for settings */
+        .account-panel{display:flex;align-items:center;justify-content:space-between;gap:12px;background:rgba(2,6,23,0.6);border:1px solid rgba(148,163,184,0.18);border-radius:14px;padding:12px 14px;margin-bottom:14px;box-shadow:0 8px 22px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.04);}
+        .account-panel .acc-left{display:flex;align-items:center;gap:10px;}
+        .account-panel .acc-avatar{width:36px;height:36px;border-radius:999px;display:grid;place-items:center;background:linear-gradient(135deg,#a78bfa,#22d3ee);color:#06101a;font-weight:900;}
+        .account-panel .acc-name{font-weight:900;}
+        .account-panel .acc-role{font-size:.85rem;color:#94a3b8;}
+        .account-panel .acc-right .logout-btn{margin:0;}
+        
+        /* Top Summary */
+        .summary{ margin: 0 0 18px; }
+        .summary-grid{ display:grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap:12px; }
+        @media (max-width: 480px){ .summary-grid{ grid-template-columns: 1fr; } }
+        .summary-card{
+            display:flex; align-items:center; gap:12px; padding:14px 16px; border-radius:14px;
+            background: rgba(2,6,23,0.6); border:1px solid rgba(148,163,184,0.18);
+            box-shadow: 0 8px 22px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.04);
+        }
+        .summary-card .s-icon{ font-size:22px; width:38px; height:38px; display:grid; place-items:center; border-radius:10px;
+            background: linear-gradient(135deg, #10b981, #06b6d4); color:#06101a; box-shadow: 0 6px 18px rgba(6,182,212,0.28);
+        }
+        .summary-card .s-info{ display:flex; flex-direction:column; }
+        .summary-card .s-label{ font-size:.86rem; color:#94a3b8; font-weight:700; }
+        .summary-card .s-value{ font-size:1.4rem; font-weight:900; letter-spacing:.2px; color:#e5e7eb; }
+
+        /* Top Summary (hero balance) */
+        .hero-card{
+            position: relative; border-radius: 18px; padding: 18px; background: rgba(17,24,39,0.85);
+            border:1px solid rgba(148,163,184,0.18); box-shadow: 0 12px 30px rgba(0,0,0,0.32);
+        }
+        .hero-cap{ position:absolute; top:-16px; left:0; right:0; height:32px; background: linear-gradient(135deg,#f59e0b,#f97316); border-top-left-radius:18px; border-top-right-radius:18px; filter: drop-shadow(0 8px 16px rgba(249,115,22,0.25)); }
+        .hero-title{ text-align:center; color:#cbd5e1; font-weight:800; letter-spacing:.3px; margin-top:8px; }
+        .hero-balance{ text-align:center; font-size:2rem; font-weight:900; letter-spacing:.3px; margin-top:4px; }
+        .hero-balance .currency{ font-size:1.1rem; font-weight:800; color:#94a3b8; margin-left:6px; }
+        .hero-change{ text-align:center; margin-top:6px; font-weight:800; }
+        .hero-change .pos{ color:#34d399; }
+        .hero-change .neg{ color:#f87171; }
+        .rate-strip{
+            margin-top: 14px; display:flex; align-items:center; justify-content:space-between; gap:10px;
+            background: rgba(2,6,23,0.6); border:1px solid rgba(148,163,184,0.18); padding:12px 14px; border-radius:12px;
+        }
+        .rate-left{ display:flex; align-items:center; gap:10px; color:#e2e8f0; font-weight:800; }
+        .rate-ic{ width:32px; height:32px; display:grid; place-items:center; border-radius:8px; background: linear-gradient(135deg,#10b981,#06b6d4); color:#06101a; }
+        .rate-val{ font-weight:900; color:#e5e7eb; }
+
         /* Bottom Navigation */
         .bottom-nav{
             position: fixed; left:0; right:0; bottom:0; z-index: 100;
@@ -501,45 +569,31 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <h1>⛏️ Crypto Mining Pro - All-in-One</h1>
-            <p>ขุดรายได้ | วงล้อนำโชค | ฝาก-ถอน | แนะนำเพื่อน - ทุกอย่างในที่เดียว</p>
-            
-            <div class="header-controls">
-                <div class="user-info">
-                    <span>👤</span>
-                    <span id="username">ผู้ใช้งาน</span>
-                </div>
-                <button class="logout-btn" onclick="logout()">
-                    <span>🚪 ออกจากระบบ</span>
-                </button>
-            </div>
-        </div>
-
         
+        
+        <section class="summary" aria-label="สรุปยอดบน">
+            <div class="hero-card">
+                <div class="hero-cap" aria-hidden="true"></div>
+                <div class="hero-title">ยอดเงินรวม</div>
+                <div class="hero-balance">฿<span id="heroBalance">0.00</span><span class="currency">THB</span></div>
+                <div class="hero-change" id="heroChange"><span id="heroChangeValue" class="pos">+0.00</span> (<span id="heroChangePercent">0.00%</span>)</div>
+                <div class="rate-strip">
+                    <div class="rate-left"><div class="rate-ic">⚡</div> อัตราการขุด</div>
+                    <div class="rate-val">฿<span id="heroRate">0.00</span>/วินาที</div>
+                </div>
+            </div>
+        </section>
+
         <!-- Tab 1: Mining -->
         <div id="mining" class="tab-content active">
             <div class="dashboard">
-                <div class="stat-card">
-                    <div class="icon">💰</div>
-                    <div class="label">ยอดเงินรวม</div>
-                    <div class="value">฿<span id="totalBalance">0.00</span></div>
-                    <div class="sub-value">THB</div>
-                </div>
-                <div class="stat-card">
+                                <div class="stat-card">
                     <div class="icon">⚡</div>
                     <div class="label">อัตราการขุด</div>
                     <div class="value">฿<span id="miningRate">0.10</span></div>
                     <div class="sub-value">/วินาที</div>
                 </div>
-                <div class="stat-card">
-                    <div class="icon">📈</div>
-                    <div class="label">รายได้วันนี้</div>
-                    <div class="value">฿<span id="todayEarnings">0.00</span></div>
-                    <div class="sub-value">THB</div>
-                </div>
-                <div class="stat-card">
+                                <div class="stat-card">
                     <div class="icon">🔥</div>
                     <div class="label">พลังขุดรวม</div>
                     <div class="value"><span id="totalPower">1.0</span></div>
@@ -560,7 +614,7 @@
 
         <!-- Tab 2: Shop -->
         <div id="shop" class="tab-content">
-            <h2 style="margin-bottom: 20px;">🛒 ร้านค้าเครื่องขุด</h2>
+            <h2 style="margin-bottom: 20px;">🛒ร้านค้าเครื่องขุด</h2>
             <p style="opacity: 0.8; margin-bottom: 20px;">ซื้อเครื่องขุดเพื่อเพิ่มรายได้!</p>
             
             <div class="shop-grid" id="shopGrid">
@@ -658,6 +712,19 @@
         <!-- Tab 6: Settings -->
         <div id="settings" class="tab-content">
             <h2 style="margin-bottom: 20px;">⚙️ การตั้งค่า</h2>
+
+            <div class="account-panel">
+                <div class="acc-left">
+                    <div class="acc-avatar">👤</div>
+                    <div>
+                        <div class="acc-name" id="settingsUsername">ผู้ใช้งาน</div>
+                        <div class="acc-role">บัญชีของฉัน</div>
+                    </div>
+                </div>
+                <div class="acc-right">
+                    <button class="logout-btn" onclick="logout()">🚪 ออกจากระบบ</button>
+                </div>
+            </div>
 
             <div class="referral-box" style="margin-bottom:20px;">
                 <h3>บัญชีและความปลอดภัย</h3>
@@ -828,6 +895,9 @@
             if (tabName === 'settings') {
                 loadSettingsToForm();
             }
+            if (tabName === 'shop') {
+                renderShop();
+            }
         }
 
         // ============ Mining System ============
@@ -873,9 +943,21 @@
 
         // ============ Display Update ============
         function updateDisplay() {
-            document.getElementById('totalBalance').textContent = gameData.balance.toFixed(2);
+            const balEl = document.getElementById('totalBalance'); if (balEl) balEl.textContent = gameData.balance.toFixed(2);
+            const tb = document.getElementById('topTotalBalance'); if (tb) tb.textContent = gameData.balance.toFixed(2);
+            const hb = document.getElementById('heroBalance'); if (hb) hb.textContent = gameData.balance.toFixed(2);
             document.getElementById('miningRate').textContent = gameData.miningRate.toFixed(2);
-            document.getElementById('todayEarnings').textContent = gameData.todayEarnings.toFixed(2);
+            const hr = document.getElementById('heroRate'); if (hr) hr.textContent = gameData.miningRate.toFixed(2);
+            const teEl = document.getElementById('todayEarnings'); if (teEl) teEl.textContent = gameData.todayEarnings.toFixed(2);
+            const te = document.getElementById('topTodayEarnings'); if (te) te.textContent = gameData.todayEarnings.toFixed(2);
+            const hc = document.getElementById('heroChangeValue'); const hp = document.getElementById('heroChangePercent');
+            if (hc && hp) {
+                const val = gameData.todayEarnings;
+                const percent = gameData.balance > 0 ? (val / gameData.balance) * 100 : 0;
+                hc.textContent = `${val >= 0 ? '+' : ''}${val.toFixed(2)}`;
+                hc.className = val >= 0 ? 'pos' : 'neg';
+                hp.textContent = `${percent.toFixed(2)}%`;
+            }
             document.getElementById('totalPower').textContent = gameData.totalPower.toFixed(1);
             document.getElementById('walletBalance').textContent = gameData.balance.toFixed(2);
             document.getElementById('spinsLeft').textContent = gameData.spinsRemaining;
@@ -895,17 +977,29 @@
 
                 const card = document.createElement('div');
                 card.className = 'miner-card';
+                const localImg = `assets/miners/${miner.id}.png`;
+                const placeholder = `https://placehold.co/600x338/0f172a/94a3b8?text=${encodeURIComponent(miner.name)}`;
+                const images = {
+                    starter: `<svg viewBox='0 0 200 120' xmlns='http://www.w3.org/2000/svg'><defs><linearGradient id='g1' x1='0' x2='1'><stop stop-color='#10b981'/><stop offset='1' stop-color='#06b6d4'/></linearGradient></defs><rect rx='12' ry='12' width='200' height='120' fill='url(#g1)' opacity='0.18'/><rect x='20' y='30' width='160' height='60' rx='8' ry='8' fill='#0ea5e9'/><rect x='36' y='46' width='40' height='28' rx='4' fill='#111827'/><rect x='84' y='46' width='40' height='28' rx='4' fill='#111827'/><rect x='132' y='46' width='24' height='28' rx='4' fill='#111827'/></svg>`,
+                    gtx1050ti: `<svg viewBox='0 0 200 120' xmlns='http://www.w3.org/2000/svg'><rect width='200' height='120' rx='12' fill='#a78bfa' opacity='.18'/><g><rect x='24' y='30' width='152' height='60' rx='10' fill='#0f172a'/><rect x='36' y='42' width='40' height='36' rx='4' fill='#22d3ee'/><rect x='84' y='42' width='80' height='36' rx='6' fill='#111827'/></g></svg>`,
+                    rtx3060: `<svg viewBox='0 0 200 120' xmlns='http://www.w3.org/2000/svg'><rect width='200' height='120' rx='12' fill='#0ea5e9' opacity='.18'/><g><rect x='26' y='34' width='148' height='52' rx='10' fill='#111827'/><circle cx='58' cy='60' r='18' fill='#22d3ee'/><circle cx='58' cy='60' r='10' fill='#0ea5e9'/><rect x='86' y='46' width='72' height='28' rx='6' fill='#1f2937'/></g></svg>`,
+                    rtx4090: `<svg viewBox='0 0 200 120' xmlns='http://www.w3.org/2000/svg'><rect width='200' height='120' rx='12' fill='#f59e0b' opacity='.18'/><g><rect x='26' y='34' width='148' height='52' rx='10' fill='#0f172a'/><circle cx='58' cy='60' r='20' fill='#06b6d4'/><rect x='84' y='46' width='72' height='28' rx='6' fill='#1f2937'/></g></svg>`,
+                    antminers9: `<svg viewBox='0 0 200 120' xmlns='http://www.w3.org/2000/svg'><rect width='200' height='120' rx='12' fill='#34d399' opacity='.18'/><g><rect x='30' y='28' width='140' height='64' rx='10' fill='#0f172a'/><rect x='48' y='42' width='24' height='36' rx='4' fill='#1f2937'/><rect x='80' y='42' width='24' height='36' rx='4' fill='#1f2937'/><rect x='112' y='42' width='24' height='36' rx='4' fill='#1f2937'/></g></svg>`,
+                    profarm: `<svg viewBox='0 0 200 120' xmlns='http://www.w3.org/2000/svg'><rect width='200' height='120' rx='12' fill='#22d3ee' opacity='.18'/><g><rect x='20' y='40' width='160' height='40' rx='8' fill='#0f172a'/><rect x='28' y='48' width='24' height='24' rx='4' fill='#1f2937'/><rect x='60' y='48' width='24' height='24' rx='4' fill='#1f2937'/><rect x='92' y='48' width='24' height='24' rx='4' fill='#1f2937'/><rect x='124' y='48' width='24' height='24' rx='4' fill='#1f2937'/></g></svg>`,
+                    gtx1050tiasx: `<svg viewBox='0 0 200 120' xmlns='http://www.w3.org/2000/svg'><rect width='200' height='120' rx='12' fill='#a78bfa' opacity='.18'/><g><rect x='24' y='30' width='152' height='60' rx='10' fill='#0f172a'/><rect x='36' y='42' width='40' height='36' rx='4' fill='#22d3ee'/><rect x='84' y='42' width='80' height='36' rx='6' fill='#111827'/></g></svg>`
+                };
+                /* svg removed - using emoji icon rendering */
                 card.innerHTML = `
                     <div style="text-align: center; font-size: 3em; margin-bottom: 10px;">${miner.icon}</div>
-                    <h3 style="text-align: center; margin-bottom: 10px;">${miner.name}</h3>
+                    <h3 style="text-align: center; margin-bottom: 10px; text-transform: uppercase;">${miner.name}</h3>
                     <p style="opacity: 0.8; text-align: center;">
                         ⚡ ${miner.power} MH/s<br>
                         💰 ฿${miner.rate}/วินาที
                     </p>
-                    <p style="text-align: center; font-size: 1.5em; color: #4ade80; margin: 15px 0;">
+                    <p style="text-align: center; font-size: 1.8em; color: #22c55e; margin: 18px 0;">
                         ${miner.price === 0 ? 'ฟรี!' : '฿' + miner.price.toLocaleString()}
                     </p>
-                    ${owned > 0 ? `<p style="text-align: center; opacity: 0.8;">มีแล้ว: ${owned} เครื่อง</p>` : ''}
+                    ${owned > 0 ? `<p style="text-align: center; opacity: 0.85;">มีแล้ว: ${owned} เครื่อง</p>` : ''}
                     <button class="buy-btn" onclick="buyMiner('${miner.id}')" ${!canBuy || miner.price === 0 ? 'disabled' : ''}>
                         ${miner.price === 0 ? 'มีแล้ว' : (canBuy ? 'ซื้อเลย' : 'เงินไม่พอ')}
                     </button>
@@ -1089,11 +1183,24 @@
         window.addEventListener('load', () => {
             loadUserInfo();
             loadData();
+            // Activate Frame 2 from URL or localStorage
+            const params = new URLSearchParams(window.location.search);
+            const frame = params.get('frame') || localStorage.getItem('appFrame');
+            if (frame === '2') {
+                document.body.classList.add('frame-2');
+                switchTab('shop');
+            }
             setInterval(saveData, 10000); // บันทึกทุก 10 วินาที
         });
 
         // ===== Settings Handlers =====
         function loadSettingsToForm(){
+            // เติมชื่อผู้ใช้ในแผงบัญชี
+            try{
+                const sess = JSON.parse(localStorage.getItem('userSession')||'{}');
+                const su = document.getElementById('settingsUsername');
+                if(su){ su.textContent = (gameData.account.username || sess.username || sess.email || 'ผู้ใช้งาน'); }
+            }catch(e){}
             // Account & Security
             document.getElementById('set_username').value = gameData.account.username || '';
             document.getElementById('set_email').value = gameData.account.email || '';
