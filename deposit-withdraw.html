@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>💰 ฝาก-ถอนเงิน - Crypto Mining Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .balance-card {
+            background: linear-gradient(135deg, #10b981, #059669);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(16, 185, 129, 0.4);
+            text-align: center;
+        }
+
+        .balance-label {
+            font-size: 1.1em;
+            opacity: 0.9;
+            margin-bottom: 10px;
+        }
+
+        .balance-amount {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .balance-subtext {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            flex: 1;
+            min-width: 200px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+        }
+
+        .tab.active {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #10b981;
+            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .tab-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .tab-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .tab-desc {
+            font-size: 0.85em;
+            opacity: 0.8;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .card h2 {
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1em;
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1em;
+        }
+
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .payment-method {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .payment-method:hover {
+            background: rgba(0, 0, 0, 0.3);
+            transform: translateY(-3px);
+        }
+
+        .payment-method.selected {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .payment-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .payment-name {
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 25px rgba(16, 185, 129, 0.6);
+        }
+
+        .submit-btn:disabled {
+            background: gray;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .transaction-history {
+            margin-top: 30px;
+        }
+
+        .transaction-item {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .transaction-info {
+            flex: 1;
+        }
+
+        .transaction-type {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+
+        .transaction-date {
+            font-size: 0.85em;
+            opacity: 0.7;
+        }
+
+        .transaction-amount {
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .transaction-amount.deposit {
+            color: #4ade80;
+        }
+
+        .transaction-amount.withdraw {
+            color: #fbbf24;
+        }
+
+        .status-badge {
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+
+        .status-success {
+            background: #10b981;
+        }
+
+        .status-pending {
+            background: #f59e0b;
+        }
+
+        .status-failed {
+            background: #ef4444;
+        }
+
+        .quick-amounts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .quick-amount {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .quick-amount:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .quick-amount.selected {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.2);
+        }
+
+        .qr-code {
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .qr-code img {
+            max-width: 250px;
+            width: 100%;
+        }
+
+        .bank-info {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .bank-detail {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .bank-detail:last-child {
+            border-bottom: none;
+        }
+
+        .copy-btn {
+            padding: 5px 15px;
+            background: #3b82f6;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.85em;
+        }
+
+        .copy-btn:hover {
+            background: #2563eb;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .balance-amount {
+                font-size: 2.2em;
+            }
+
+            .tabs {
+                flex-direction: column;
+            }
+
+            .tab {
+                min-width: 100%;
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .modal-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+        }
+
+        .modal-title {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .modal-text {
+            font-size: 1.1em;
+            margin-bottom: 25px;
+            opacity: 0.9;
+        }
+
+        .modal-btn {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 ระบบฝาก-ถอนเงิน</h1>
+            <p>จัดการการเงินของคุณอย่างปลอดภัย</p>
+        </div>
+
+        <div class="balance-card">
+            <div class="balance-label">ยอดเงินคงเหลือ</div>
+            <div class="balance-amount" id="currentBalance">฿0.00</div>
+            <div class="balance-subtext">อัปเดตล่าสุด: <span id="lastUpdate">-</span></div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('deposit')">
+                <div class="tab-icon">💳</div>
+                <div class="tab-title">ฝากเงิน</div>
+                <div class="tab-desc">เติมเงินเข้าระบบ</div>
+            </div>
+            <div class="tab" onclick="switchTab('withdraw')">
+                <div class="tab-icon">💸</div>
+                <div class="tab-title">ถอนเงิน</div>
+                <div class="tab-desc">โอนเงินออก</div>
+            </div>
+            <div class="tab" onclick="switchTab('history')">
+                <div class="tab-icon">📋</div>
+                <div class="tab-title">ประวัติ</div>
+                <div class="tab-desc">รายการทั้งหมด</div>
+            </div>
+        </div>
+
+        <!-- Deposit Section -->
+        <div id="depositSection" class="content-section active">
+            <div class="card">
+                <h2>💳 ฝากเงินเข้าระบบ</h2>
+                
+                <div class="info-box">
+                    ℹ️ ระบบจะเติมเงินเข้าบัญชีภายใน 1-5 นาทีหลังโอนเงินสำเร็จ
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">เลือกวิธีการฝาก</label>
+                    <div class="payment-methods">
+                        <div class="payment-method selected" onclick="selectPaymentMethod('promptpay')" data-method="promptpay">
+                            <div class="payment-icon">📱</div>
+                            <div class="payment-name">พร้อมเพย์</div>
+                        </div>
+                        <div class="payment-method" onclick="selectPaymentMethod('bank')" data-method="bank">
+                            <div class="payment-icon">🏦</div>
+                            <div class="payment-name">โอนธนาคาร</div>
+                        </div>
+                        <div class="payment-method" onclick="selectPaymentMethod('card')" data-method="card">
+                            <div class="payment-icon">💳</div>
+                            <div class="payment-name">บัตรเครดิต</div>
+                        </div>
+                        <div class="payment-method" onclick="selectPaymentMethod('truewallet')" data-method="truewallet">
+                            <div class="payment-icon">🐱</div>
+                            <div class="payment-name">TrueMoney</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">จำนวนเงินที่ต้องการฝาก (บาท)</label>
+                    <div class="quick-amounts">
+                        <div class="quick-amount" onclick="selectQuickAmount(100)">100</div>
+                        <div class="quick-amount" onclick="selectQuickAmount(500)">500</div>
+                        <div class="quick-amount" onclick="selectQuickAmount(1000)">1,000</div>
+                        <div class="quick-amount" onclick="selectQuickAmount(5000)">5,000</div>
+                        <div class="quick-amount" onclick="selectQuickAmount(10000)">10,000</div>
+                    </div>
+                    <input type="number" class="form-input" id="depositAmount" placeholder="หรือกรอกจำนวนเองที่นี่" min="10">
+                </div>
+
+                <div id="paymentDetails" style="display: none;">
+                    <!-- จะแสดงรายละเอียดการชำระเงินตามช่องทางที่เลือก -->
+                </div>
+
+                <button class="submit-btn" onclick="processDeposit()">💰 ดำเนินการฝากเงิน</button>
+            </div>
+        </div>
+
+        <!-- Withdraw Section -->
+        <div id="withdrawSection" class="content-section">
+            <div class="card">
+                <h2>💸 ถอนเงินออกจากระบบ</h2>
+                
+                <div class="warning-box">
+                    ⚠️ ยอดถอนขั้นต่ำ 100 บาท | ระยะเวลาโอนเงิน 1-24 ชั่วโมง
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">จำนวนเงินที่ต้องการถอน (บาท)</label>
+                    <input type="number" class="form-input" id="withdrawAmount" placeholder="ใส่จำนวนเงิน" min="100">
+                    <div style="margin-top: 10px; font-size: 0.9em; opacity: 0.8;">
+                        ยอดเงินที่ถอนได้: <span style="color: #4ade80; font-weight: bold;">฿<span id="availableBalance">0.00</span></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">ธนาคาร</label>
+                    <select class="form-select" id="bankName">
+                        <option value="">-- เลือกธนาคาร --</option>
+                        <option value="kbank">ธนาคารกสิกรไทย</option>
+                        <option value="scb">ธนาคารไทยพาณิชย์</option>
+                        <option value="bbl">ธนาคารกรุงเทพ</option>
+                        <option value="ktb">ธนาคารกรุงไทย</option>
+                        <option value="bay">ธนาคารกรุงศรีอยุธยา</option>
+                        <option value="tmb">ธนาคารทหารไทยธนชาต</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">เลขที่บัญชี</label>
+                    <input type="text" class="form-input" id="accountNumber" placeholder="xxx-x-xxxxx-x" maxlength="15">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">ชื่อบัญชี</label>
+                    <input type="text" class="form-input" id="accountName" placeholder="ชื่อ-นามสกุล ตามบัญชี">
+                </div>
+
+                <button class="submit-btn" onclick="processWithdraw()">💸 ยืนยันการถอนเงิน</button>
+            </div>
+        </div>
+
+        <!-- History Section -->
+        <div id="historySection" class="content-section">
+            <div class="card">
+                <h2>📋 ประวัติการทำรายการ</h2>
+                <div id="transactionHistory">
+                    <!-- จะเพิ่มรายการที่นี่ -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-icon">✅</div>
+            <div class="modal-title" id="modalTitle">สำเร็จ!</div>
+            <div class="modal-text" id="modalText">ทำรายการสำเร็จ</div>
+            <button class="modal-btn" onclick="closeModal()">ตกลง</button>
+        </div>
+    </div>
+
+    <script>
+        // ข้อมูลผู้ใช้
+        let userData = {
+            balance: 5420.50, // ยอดเงินปัจจุบัน
+            transactions: [
+                { id: 1, type: 'deposit', amount: 1000, method: 'พร้อมเพย์', status: 'success', date: '2024-01-15 14:30' },
+                { id: 2, type: 'withdraw', amount: 500, method: 'โอนธนาคาร', status: 'success', date: '2024-01-14 10:15' },
+                { id: 3, type: 'deposit', amount: 5000, method: 'โอนธนาคาร', status: 'pending', date: '2024-01-13 16:45' }
+            ]
+        };
+
+        let selectedPaymentMethod = 'promptpay';
+
+        // โหลดข้อมูลเมื่อเริ่มต้น
+        window.onload = function() {
+            updateBalance();
+            renderTransactionHistory();
+        };
+
+        // อัปเดตยอดเงิน
+        function updateBalance() {
+            document.getElementById('currentBalance').textContent = `฿${userData.balance.toLocaleString('th-TH', {minimumFractionDigits: 2})}`;
+            document.getElementById('availableBalance').textContent = userData.balance.toLocaleString('th-TH', {minimumFractionDigits: 2});
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleString('th-TH');
+        }
+
+        // สลับแท็บ
+        function switchTab(tab) {
+            // อัพเดท Tab
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.closest('.tab').classList.add('active');
+
+            // อัพเดท Section
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            if (tab === 'deposit') {
+                document.getElementById('depositSection').classList.add('active');
+            } else if (tab === 'withdraw') {
+                document.getElementById('withdrawSection').classList.add('active');
+            } else if (tab === 'history') {
+                document.getElementById('historySection').classList.add('active');
+                renderTransactionHistory();
+            }
+        }
+
+        // เลือกวิธีการชำระเงิน
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            document.querySelectorAll('.payment-method').forEach(pm => pm.classList.remove('selected'));
+            event.target.closest('.payment-method').classList.add('selected');
+        }
+
+        // เลือกจำนวนเงินด่วน
+        function selectQuickAmount(amount) {
+            document.getElementById('depositAmount').value = amount;
+            document.querySelectorAll('.quick-amount').forEach(qa => qa.classList.remove('selected'));
+            event.target.classList.add('selected');
+        }
+
+        // ประมวลผลฝากเงิน
+        function processDeposit() {
+            const amount = parseFloat(document.getElementById('depositAmount').value);
+
+            if (!amount || amount < 10) {
+                alert('กรุณากรอกจำนวนเงินขั้นต่ำ 10 บาท');
+                return;
+            }
+
+            // สร้างรายการทำธุรกรรม
+            const transaction = {
+                id: Date.now(),
+                type: 'deposit',
+                amount: amount,
+                method: getMethodName(selectedPaymentMethod),
+                status: 'pending',
+                date: new Date().toLocaleString('th-TH')
+            };
+
+            userData.transactions.unshift(transaction);
+
+            // จำลองการชำระเงินสำเร็จ
+            setTimeout(() => {
+                transaction.status = 'success';
+                userData.balance += amount;
+                updateBalance();
+                renderTransactionHistory();
+                
+                showModal(
+                    '✅ ฝากเงินสำเร็จ!',
+                    `คุณได้ฝากเงิน ฿${amount.toLocaleString('th-TH')} เข้าระบบเรียบร้อยแล้ว`
+                );
+            }, 2000);
+
+            // แสดง Modal กำลังประมวลผล
+            showModal(
+                '⏳ กำลังดำเนินการ',
+                'กรุณารอสักครู่...'
+            );
+        }
+
+        // ประมวลผลถอนเงิน
+        function processWithdraw() {
+            const amount = parseFloat(document.getElementById('withdrawAmount').value);
+            const bankName = document.getElementById('bankName').value;
+            const accountNumber = document.getElementById('accountNumber').value;
+            const accountName = document.getElementById('accountName').value;
+
+            // ตรวจสอบข้อมูล
+            if (!amount || amount < 100) {
+                alert('กรุณากรอกจำนวนเงินขั้นต่ำ 100 บาท');
+                return;
+            }
+
+            if (amount > userData.balance) {
+                alert('ยอดเงินไม่เพียงพอ');
+                return;
+            }
+
+            if (!bankName || !accountNumber || !accountName) {
+                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+                return;
+            }
+
+            // สร้างรายการทำธุรกรรม
+            const transaction = {
+                id: Date.now(),
+                type: 'withdraw',
+                amount: amount,
+                method: 'โอนธนาคาร',
+                status: 'pending',
+                date: new Date().toLocaleString('th-TH'),
+                bankInfo: {
+                    bank: bankName,
+                    account: accountNumber,
+                    name: accountName
+                }
+            };
+
+            userData.transactions.unshift(transaction);
+            userData.balance -= amount;
+            updateBalance();
+            renderTransactionHistory();
+
+            showModal(
+                '✅ ดำเนินการสำเร็จ!',
+                `คำขอถอนเงิน ฿${amount.toLocaleString('th-TH')} ถูกส่งแล้ว\nจะโอนเงินเข้าบัญชีภายใน 1-24 ชั่วโมง`
+            );
+
+            // ล้างฟอร์ม
+            document.getElementById('withdrawAmount').value = '';
+            document.getElementById('accountNumber').value = '';
+            document.getElementById('accountName').value = '';
+        }
+
+        // แสดงประวัติการทำรายการ
+        function renderTransactionHistory() {
+            const container = document.getElementById('transactionHistory');
+            
+            if (userData.transactions.length === 0) {
+                container.innerHTML = '<p style="text-align: center; opacity: 0.7;">ยังไม่มีรายการ</p>';
+                return;
+            }
+
+            container.innerHTML = '';
+            userData.transactions.forEach(tx => {
+                const item = document.createElement('div');
+                item.className = 'transaction-item';
+                
+                const typeText = tx.type === 'deposit' ? 'ฝากเงิน' : 'ถอนเงิน';
+                const amountClass = tx.type;
+                const sign = tx.type === 'deposit' ? '+' : '-';
+                
+                let statusBadge = '';
+                if (tx.status === 'success') {
+                    statusBadge = '<span class="status-badge status-success">สำเร็จ</span>';
+                } else if (tx.status === 'pending') {
+                    statusBadge = '<span class="status-badge status-pending">รอดำเนินการ</span>';
+                } else {
+                    statusBadge = '<span class="status-badge status-failed">ไม่สำเร็จ</span>';
+                }
+
+                item.innerHTML = `
+                    <div class="transaction-info">
+                        <div class="transaction-type">${tx.type === 'deposit' ? '💳' : '💸'} ${typeText} - ${tx.method}</div>
+                        <div class="transaction-date">${tx.date}</div>
+                    </div>
+                    <div style="display: flex; align-items: center;">
+                        <div class="transaction-amount ${amountClass}">${sign}฿${tx.amount.toLocaleString('th-TH')}</div>
+                        ${statusBadge}
+                    </div>
+                `;
+                
+                container.appendChild(item);
+            });
+        }
+
+        // ชื่อวิธีการชำระเงิน
+        function getMethodName(method) {
+            const names = {
+                'promptpay': 'พร้อมเพย์',
+                'bank': 'โอนธนาคาร',
+                'card': 'บัตรเครดิต',
+                'truewallet': 'TrueMoney'
+            };
+            return names[method] || method;
+        }
+
+        // แสดง Modal
+        function showModal(title, text) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalText').textContent = text;
+            document.getElementById('successModal').style.display = 'flex';
+        }
+
+        // ปิด Modal
+        function closeModal() {
+            document.getElementById('successModal').style.display = 'none';
+        }
+
+        // โหลดข้อมูลจาก localStorage
+        const savedData = localStorage.getItem('miningGameData');
+        if (savedData) {
+            const gameData = JSON.parse(savedData);
+            userData.balance = gameData.balance || 0;
+            updateBalance();
+        }
+
+        // บันทึกข้อมูลกลับไป localStorage เมื่อมีการเปลี่ยนแปลง
+        function saveToGame() {
+            const savedData = localStorage.getItem('miningGameData');
+            if (savedData) {
+                const gameData = JSON.parse(savedData);
+                gameData.balance = userData.balance;
+                localStorage.setItem('miningGameData', JSON.stringify(gameData));
+            }
+        }
+    </script>
+</body>
+</html>

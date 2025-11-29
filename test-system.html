@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 ทดสอบระบบ</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 25px;
+            text-align: center;
+            color: white;
+            max-width: 500px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .status {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+        }
+
+        .status-item {
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+
+        .value {
+            color: #4ade80;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="pulse">✅ ทำงานได้แล้ว!</h1>
+        <p>ถ้าคุณเห็นหน้านี้ แสดงว่าไฟล์ HTML ทำงานได้ปกติ! 🎉</p>
+        
+        <button class="btn" onclick="testClick()">🚀 กดทดสอบ</button>
+        <button class="btn" onclick="testLocalStorage()">💾 ทดสอบ LocalStorage</button>
+        
+        <div class="status">
+            <div class="status-item">
+                🎯 สถานะ: <span class="value" id="status">พร้อมใช้งาน</span>
+            </div>
+            <div class="status-item">
+                🕐 เวลา: <span class="value" id="time">-</span>
+            </div>
+            <div class="status-item">
+                💰 ทดสอบข้อมูล: <span class="value" id="data">-</span>
+            </div>
+        </div>
+
+        <div style="margin-top: 30px; opacity: 0.8; font-size: 0.9em;">
+            <p>📱 เปิดได้บนมือถือและคอมพิวเตอร์</p>
+            <p>🌐 Browser: Chrome, Safari, Firefox, Edge</p>
+            <p>✨ ไม่ต้องติดตั้งอะไรเพิ่ม</p>
+        </div>
+    </div>
+
+    <script>
+        // อัปเดตเวลา
+        function updateTime() {
+            const now = new Date();
+            document.getElementById('time').textContent = now.toLocaleTimeString('th-TH');
+        }
+        
+        setInterval(updateTime, 1000);
+        updateTime();
+
+        // ทดสอบการคลิก
+        function testClick() {
+            document.getElementById('status').textContent = 'คลิกสำเร็จ! ✅';
+            alert('🎉 ยินดีด้วย! ระบบทำงานได้ปกติ\n\nไฟล์ HTML ของคุณพร้อมใช้งานแล้ว!');
+        }
+
+        // ทดสอบ LocalStorage
+        function testLocalStorage() {
+            try {
+                // บันทึกข้อมูล
+                localStorage.setItem('testData', 'Hello World! 🌍');
+                
+                // อ่านข้อมูล
+                const data = localStorage.getItem('testData');
+                document.getElementById('data').textContent = data;
+                
+                alert('✅ LocalStorage ทำงานได้!\n\nไฟล์ทั้งหมดที่ผมสร้างให้จะใช้ LocalStorage เชื่อมต่อกัน');
+            } catch (e) {
+                alert('❌ LocalStorage ใช้งานไม่ได้\n\nลองเปิดในเบราว์เซอร์ปกติ (ไม่ใช่โหมดไม่ระบุตัวตน)');
+            }
+        }
+
+        console.log('🎮 ระบบทดสอบพร้อมใช้งาน!');
+        console.log('✅ ถ้าเห็นข้อความนี้ใน Console แสดงว่า JavaScript ทำงานได้!');
+    </script>
+</body>
+</html>

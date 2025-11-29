@@ -1,0 +1,1612 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎮 Admin Panel - Mining System</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 250px;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .logo h2 {
+            font-size: 1.5em;
+            margin-top: 10px;
+        }
+
+        .menu-item {
+            padding: 15px 20px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .menu-item.active {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .top-bar {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .top-bar h1 {
+            font-size: 2em;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #4ade80;
+        }
+
+        .stat-change {
+            font-size: 0.85em;
+            margin-top: 5px;
+            color: #4ade80;
+        }
+
+        .chart-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-box {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chart-box h3 {
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .users-table {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .users-table h3 {
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        th {
+            background: rgba(0, 0, 0, 0.2);
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .status-badge {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background: #10b981;
+            color: white;
+        }
+
+        .status-inactive {
+            background: #ef4444;
+            color: white;
+        }
+
+        .action-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-right: 5px;
+        }
+
+        .btn-view {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-edit {
+            background: #f59e0b;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #ef4444;
+            color: white;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.05);
+            opacity: 0.9;
+        }
+
+        .activity-feed {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .activity-feed h3 {
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .activity-item {
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .activity-icon {
+            font-size: 1.5em;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-time {
+            font-size: 0.85em;
+            opacity: 0.7;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #3b82f6;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 80px;
+            }
+
+            .main-content {
+                margin-left: 80px;
+            }
+
+            .menu-item span {
+                display: none;
+            }
+
+            .chart-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* ระบบค้นหาและกรอง */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1em;
+            min-width: 250px;
+        }
+
+        .search-input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 3000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1e3a8a 0%, #312e81 100%);
+            padding: 30px;
+            border-radius: 20px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .modal-title {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 0.95em;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1em;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1em;
+        }
+
+        .form-textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 1em;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            transform: scale(1.02);
+        }
+
+        .danger-btn {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        /* Sections */
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* การ์ดตั้งค่า */
+        .settings-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .settings-card h3 {
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .settings-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .settings-row:last-child {
+            border-bottom: none;
+        }
+
+        .settings-label {
+            flex: 1;
+        }
+
+        .settings-value {
+            font-weight: bold;
+            color: #4ade80;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active {
+            background: #10b981;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 24px;
+            height: 24px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-switch.active .toggle-slider {
+            left: 33px;
+        }
+
+        /* Top Users Card */
+        .top-users-card {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .rank-badge {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .rank-1 { background: linear-gradient(135deg, #fbbf24, #f59e0b); }
+        .rank-2 { background: linear-gradient(135deg, #94a3b8, #64748b); }
+        .rank-3 { background: linear-gradient(135deg, #fb923c, #ea580c); }
+        .rank-other { background: rgba(255, 255, 255, 0.1); }
+
+        .export-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+
+        .export-btn:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <div style="font-size: 3em;">⚙️</div>
+            <h2>Admin Panel</h2>
+        </div>
+        <div class="menu-item active" onclick="showSection('dashboard')">
+            <span style="font-size: 1.2em;">📊</span>
+            <span>แดชบอร์ด</span>
+        </div>
+        <div class="menu-item" onclick="showSection('users')">
+            <span style="font-size: 1.2em;">👥</span>
+            <span>จัดการผู้ใช้</span>
+        </div>
+        <div class="menu-item" onclick="showSection('earnings')">
+            <span style="font-size: 1.2em;">💰</span>
+            <span>รายงานการเงิน</span>
+        </div>
+        <div class="menu-item" onclick="showSection('miners')">
+            <span style="font-size: 1.2em;">⛏️</span>
+            <span>จัดการเครื่องขุด</span>
+        </div>
+        <div class="menu-item" onclick="showSection('rewards')">
+            <span style="font-size: 1.2em;">🎁</span>
+            <span>รางวัล & เควส</span>
+        </div>
+        <div class="menu-item" onclick="showSection('analytics')">
+            <span style="font-size: 1.2em;">📈</span>
+            <span>วิเคราะห์ข้อมูล</span>
+        </div>
+        <div class="menu-item" onclick="showSection('notifications')">
+            <span style="font-size: 1.2em;">🔔</span>
+            <span>ประกาศ</span>
+        </div>
+        <div class="menu-item" onclick="showSection('settings')">
+            <span style="font-size: 1.2em;">⚙️</span>
+            <span>ตั้งค่าระบบ</span>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <h1>🎮 ระบบจัดการเครื่องขุด</h1>
+            <div class="user-info">
+                <button class="refresh-btn" onclick="refreshData()">🔄 รีเฟรช</button>
+                <div class="avatar">👨‍💼</div>
+                <div>
+                    <div style="font-weight: bold;">Admin</div>
+                    <div style="font-size: 0.85em; opacity: 0.7;">ผู้ดูแลระบบ</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboardSection" class="content-section active">
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-icon">👥</div>
+                    <div class="stat-label">ผู้ใช้ทั้งหมด</div>
+                    <div class="stat-value" id="totalUsers">1,234</div>
+                    <div class="stat-change">+12.5% จากเดือนที่แล้ว</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-label">รายได้รวมทั้งหมด</div>
+                    <div class="stat-value">฿<span id="totalRevenue">5,678,900</span></div>
+                    <div class="stat-change">+18.3% จากเดือนที่แล้ว</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-label">ผู้ใช้ที่กำลังขุด</div>
+                    <div class="stat-value" id="activeMiners">856</div>
+                    <div class="stat-change">69.3% ของผู้ใช้ทั้งหมด</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-label">รายได้วันนี้</div>
+                    <div class="stat-value">฿<span id="todayRevenue">123,456</span></div>
+                    <div class="stat-change">+5.7% จากเมื่อวาน</div>
+                </div>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-box">
+                    <h3>📊 กราฟรายได้รายเดือน</h3>
+                    <canvas id="revenueChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h3>🥧 สัดส่วนผู้ใช้</h3>
+                    <canvas id="usersChart"></canvas>
+                </div>
+            </div>
+
+            <div class="activity-feed">
+                <h3>📋 กิจกรรมล่าสุด</h3>
+                <div id="activityContainer"></div>
+            </div>
+        </div>
+
+        <!-- Users Management Section -->
+        <div id="usersSection" class="content-section">
+            <div class="users-table">
+                <h3>👥 รายชื่อผู้ใช้งาน</h3>
+                <div class="search-bar">
+                    <input type="text" class="search-input" id="userSearch" placeholder="🔍 ค้นหาผู้ใช้ (ชื่อ, ID, อีเมล...)">
+                    <button class="search-btn" onclick="searchUsers()">ค้นหา</button>
+                    <button class="search-btn" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="showAddUserModal()">+ เพิ่มผู้ใช้</button>
+                </div>
+                <div class="filter-bar">
+                    <button class="filter-btn active" onclick="filterUsers('all')">ทั้งหมด</button>
+                    <button class="filter-btn" onclick="filterUsers('mining')">กำลังขุด</button>
+                    <button class="filter-btn" onclick="filterUsers('offline')">ออฟไลน์</button>
+                    <button class="filter-btn" onclick="filterUsers('vip')">VIP</button>
+                    <button class="filter-btn" onclick="filterUsers('banned')">ถูกแบน</button>
+                </div>
+                <table id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>ชื่อผู้ใช้</th>
+                            <th>ยอดเงิน (THB)</th>
+                            <th>พลังขุด</th>
+                            <th>สถานะ</th>
+                            <th>การจัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Financial Report Section -->
+        <div id="earningsSection" class="content-section">
+            <div class="chart-box" style="margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <h3>💰 รายงานการเงิน</h3>
+                    <div>
+                        <button class="export-btn" onclick="exportToExcel()">📥 Export Excel</button>
+                        <button class="export-btn" onclick="exportToPDF()">📄 Export PDF</button>
+                    </div>
+                </div>
+                <canvas id="financialChart"></canvas>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-icon">💵</div>
+                    <div class="stat-label">รายได้รวม (เดือนนี้)</div>
+                    <div class="stat-value">฿1,350,000</div>
+                    <div class="stat-change">+23.5% จากเดือนที่แล้ว</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">💸</div>
+                    <div class="stat-label">การถอนเงิน (เดือนนี้)</div>
+                    <div class="stat-value">฿450,000</div>
+                    <div class="stat-change">+15.2% จากเดือนที่แล้ว</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">💎</div>
+                    <div class="stat-label">กำไรสุทธิ</div>
+                    <div class="stat-value">฿900,000</div>
+                    <div class="stat-change">+28.7% จากเดือนที่แล้ว</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-label">อัตราการเติบโต</div>
+                    <div class="stat-value">32.5%</div>
+                    <div class="stat-change">ต่อเดือน</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Miners Management Section -->
+        <div id="minersSection" class="content-section">
+            <div class="settings-card">
+                <h3>⛏️ จัดการเครื่องขุด</h3>
+                <button class="search-btn" style="margin-bottom: 20px;" onclick="showAddMinerModal()">+ เพิ่มเครื่องขุดใหม่</button>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ชื่อเครื่องขุด</th>
+                            <th>พลัง (MH/s)</th>
+                            <th>ราคา (THB)</th>
+                            <th>รายได้/วินาที</th>
+                            <th>จำนวนที่ขาย</th>
+                            <th>การจัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="minersTableBody">
+                        <tr>
+                            <td>เครื่องขุดมือใหม่</td>
+                            <td>1.0</td>
+                            <td>฿0 (ฟรี)</td>
+                            <td>฿0.10</td>
+                            <td>1,234</td>
+                            <td>
+                                <button class="action-btn btn-edit" onclick="editMiner(1)">✏️</button>
+                                <button class="action-btn btn-delete" onclick="deleteMiner(1)">🗑️</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>เครื่องขุด RTX 3060</td>
+                            <td>5.0</td>
+                            <td>฿500</td>
+                            <td>฿0.50</td>
+                            <td>856</td>
+                            <td>
+                                <button class="action-btn btn-edit" onclick="editMiner(2)">✏️</button>
+                                <button class="action-btn btn-delete" onclick="deleteMiner(2)">🗑️</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>เครื่องขุด RTX 3080</td>
+                            <td>15.0</td>
+                            <td>฿2,000</td>
+                            <td>฿1.50</td>
+                            <td>432</td>
+                            <td>
+                                <button class="action-btn btn-edit" onclick="editMiner(3)">✏️</button>
+                                <button class="action-btn btn-delete" onclick="deleteMiner(3)">🗑️</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Rewards & Quests Section -->
+        <div id="rewardsSection" class="content-section">
+            <div class="settings-card">
+                <h3>🎁 จัดการรางวัลประจำวัน</h3>
+                <button class="search-btn" style="margin-bottom: 20px;" onclick="editDailyRewards()">✏️ แก้ไขรางวัล</button>
+                <div class="settings-row">
+                    <div class="settings-label">วันที่ 1</div>
+                    <div class="settings-value">฿100</div>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-label">วันที่ 2</div>
+                    <div class="settings-value">฿200</div>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-label">วันที่ 3</div>
+                    <div class="settings-value">฿300</div>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-label">วันที่ 4</div>
+                    <div class="settings-value">฿500</div>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-label">วันที่ 5</div>
+                    <div class="settings-value">฿800</div>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-label">วันที่ 6</div>
+                    <div class="settings-value">฿1,200</div>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-label">วันที่ 7</div>
+                    <div class="settings-value">฿2,000</div>
+                </div>
+            </div>
+
+            <div class="settings-card" style="margin-top: 20px;">
+                <h3>🎯 จัดการเควสรายวัน</h3>
+                <button class="search-btn" style="margin-bottom: 20px;" onclick="showAddQuestModal()">+ เพิ่มเควสใหม่</button>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ชื่อเควส</th>
+                            <th>คำอธิบาย</th>
+                            <th>เป้าหมาย</th>
+                            <th>รางวัล</th>
+                            <th>จำนวนที่ทำสำเร็จ</th>
+                            <th>การจัดการ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>เริ่มต้นขุด</td>
+                            <td>เริ่มขุดครั้งแรกของวันนี้</td>
+                            <td>1 ครั้ง</td>
+                            <td>฿50</td>
+                            <td>1,089</td>
+                            <td>
+                                <button class="action-btn btn-edit" onclick="editQuest(1)">✏️</button>
+                                <button class="action-btn btn-delete" onclick="deleteQuest(1)">🗑️</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>ขุดติดต่อกัน 5 นาที</td>
+                            <td>ขุดต่อเนื่องเป็นเวลา 5 นาที</td>
+                            <td>300 วินาที</td>
+                            <td>฿150</td>
+                            <td>743</td>
+                            <td>
+                                <button class="action-btn btn-edit" onclick="editQuest(2)">✏️</button>
+                                <button class="action-btn btn-delete" onclick="deleteQuest(2)">🗑️</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Analytics Section -->
+        <div id="analyticsSection" class="content-section">
+            <div class="chart-box" style="margin-bottom: 20px;">
+                <h3>📈 Top 10 ผู้ขุดเก่ง</h3>
+                <div id="topUsersContainer"></div>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-box">
+                    <h3>📊 กราฟการเติบโตของผู้ใช้</h3>
+                    <canvas id="userGrowthChart"></canvas>
+                </div>
+                <div class="chart-box">
+                    <h3>⛏️ รายได้แยกตามเครื่องขุด</h3>
+                    <canvas id="minerRevenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notifications Section -->
+        <div id="notificationsSection" class="content-section">
+            <div class="settings-card">
+                <h3>🔔 ส่งประกาศให้ผู้ใช้</h3>
+                <button class="search-btn" style="margin-bottom: 20px;" onclick="showSendNotificationModal()">📢 ส่งประกาศใหม่</button>
+                <div class="activity-feed" style="max-height: none;">
+                    <div class="activity-item">
+                        <div class="activity-icon">📢</div>
+                        <div class="activity-content">
+                            <div><strong>อัปเดตระบบใหม่</strong></div>
+                            <div>เพิ่มฟีเจอร์รางวัลประจำวันและเควสใหม่แล้ว!</div>
+                            <div class="activity-time">ส่งเมื่อ: 2 ชั่วโมงที่แล้ว | ผู้รับ: ทุกคน</div>
+                        </div>
+                        <button class="action-btn btn-delete" onclick="deleteNotification(1)">🗑️</button>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon">⚠️</div>
+                        <div class="activity-content">
+                            <div><strong>ปรับปรุงระบบ</strong></div>
+                            <div>จะมีการปรับปรุงระบบในวันพรุ่งนี้ เวลา 02:00-04:00 น.</div>
+                            <div class="activity-time">ส่งเมื่อ: 1 วันที่แล้ว | ผู้รับ: ทุกคน</div>
+                        </div>
+                        <button class="action-btn btn-delete" onclick="deleteNotification(2)">🗑️</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settingsSection" class="content-section">
+            <div class="settings-card">
+                <h3>⚙️ ตั้งค่าระบบทั่วไป</h3>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <div style="font-weight: bold;">เปิดระบบลงทะเบียน</div>
+                        <div style="font-size: 0.85em; opacity: 0.7;">อนุญาตให้ผู้ใช้ใหม่สมัครสมาชิก</div>
+                    </div>
+                    <div class="toggle-switch active" onclick="toggleSetting(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <div style="font-weight: bold;">เปิดระบบถอนเงิน</div>
+                        <div style="font-size: 0.85em; opacity: 0.7;">อนุญาตให้ผู้ใช้ถอนเงินได้</div>
+                    </div>
+                    <div class="toggle-switch active" onclick="toggleSetting(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+                <div class="settings-row">
+                    <div class="settings-label">
+                        <div style="font-weight: bold;">โหมดบำรุงรักษา</div>
+                        <div style="font-size: 0.85em; opacity: 0.7;">ปิดระบบชั่วคราวเพื่อบำรุงรักษา</div>
+                    </div>
+                    <div class="toggle-switch" onclick="toggleSetting(this)">
+                        <div class="toggle-slider"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-card">
+                <h3>💰 ตั้งค่าอัตราการขุด</h3>
+                <div class="form-group">
+                    <label class="form-label">อัตรารายได้พื้นฐาน (THB/วินาที)</label>
+                    <input type="number" class="form-input" value="0.10" step="0.01" onchange="updateBasicRate(this.value)">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">โบนัสสมาชิก VIP (%)</label>
+                    <input type="number" class="form-input" value="50" onchange="updateVIPBonus(this.value)">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">ยอดถอนขั้นต่ำ (THB)</label>
+                    <input type="number" class="form-input" value="100" onchange="updateMinWithdraw(this.value)">
+                </div>
+                <button class="submit-btn" onclick="saveSettings()">💾 บันทึกการตั้งค่า</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+
+    <!-- Modals -->
+    <!-- Edit User Modal -->
+    <div id="editUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">✏️ แก้ไขข้อมูลผู้ใช้</div>
+                <button class="close-btn" onclick="closeModal('editUserModal')">×</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">ชื่อผู้ใช้</label>
+                <input type="text" class="form-input" id="editUsername" placeholder="ชื่อผู้ใช้">
+            </div>
+            <div class="form-group">
+                <label class="form-label">ยอดเงิน (THB)</label>
+                <input type="number" class="form-input" id="editBalance" placeholder="0.00">
+            </div>
+            <div class="form-group">
+                <label class="form-label">พลังขุด (MH/s)</label>
+                <input type="number" class="form-input" id="editPower" placeholder="0.0">
+            </div>
+            <div class="form-group">
+                <label class="form-label">สถานะ</label>
+                <select class="form-select" id="editStatus">
+                    <option value="active">ใช้งาน</option>
+                    <option value="inactive">ไม่ใช้งาน</option>
+                    <option value="banned">ถูกแบน</option>
+                    <option value="vip">VIP</option>
+                </select>
+            </div>
+            <button class="submit-btn" onclick="saveUserEdit()">💾 บันทึกการแก้ไข</button>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">➕ เพิ่มผู้ใช้ใหม่</div>
+                <button class="close-btn" onclick="closeModal('addUserModal')">×</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">ชื่อผู้ใช้</label>
+                <input type="text" class="form-input" placeholder="ชื่อผู้ใช้">
+            </div>
+            <div class="form-group">
+                <label class="form-label">อีเมล</label>
+                <input type="email" class="form-input" placeholder="email@example.com">
+            </div>
+            <div class="form-group">
+                <label class="form-label">รหัสผ่าน</label>
+                <input type="password" class="form-input" placeholder="รหัสผ่าน">
+            </div>
+            <button class="submit-btn" onclick="addNewUser()">➕ เพิ่มผู้ใช้</button>
+        </div>
+    </div>
+
+    <!-- Send Notification Modal -->
+    <div id="notificationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">📢 ส่งประกาศใหม่</div>
+                <button class="close-btn" onclick="closeModal('notificationModal')">×</button>
+            </div>
+            <div class="form-group">
+                <label class="form-label">หัวข้อประกาศ</label>
+                <input type="text" class="form-input" id="notifTitle" placeholder="หัวข้อประกาศ">
+            </div>
+            <div class="form-group">
+                <label class="form-label">เนื้อหาประกาศ</label>
+                <textarea class="form-textarea" id="notifMessage" placeholder="เนื้อหาประกาศ..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">ส่งถึง</label>
+                <select class="form-select">
+                    <option>ทุกคน</option>
+                    <option>เฉพาะผู้ใช้ออนไลน์</option>
+                    <option>เฉพาะ VIP</option>
+                    <option>ผู้ใช้เฉพาะคน</option>
+                </select>
+            </div>
+            <button class="submit-btn" onclick="sendNotification()">📤 ส่งประกาศ</button>
+        </div>
+    </div>
+
+    <script>
+        // ข้อมูลผู้ใช้สำหรับทดสอบ
+        let usersData = [
+            { id: 1, username: 'user001', balance: 45678.90, power: 125.5, status: 'active', mining: true, vip: false },
+            { id: 2, username: 'miner_pro', balance: 89012.34, power: 456.8, status: 'active', mining: true, vip: true },
+            { id: 3, username: 'crypto_king', balance: 123456.78, power: 890.2, status: 'active', mining: true, vip: true },
+            { id: 4, username: 'newbie123', balance: 567.89, power: 15.3, status: 'active', mining: false, vip: false },
+            { id: 5, username: 'gold_miner', balance: 234567.12, power: 1250.9, status: 'active', mining: true, vip: true },
+            { id: 6, username: 'lazy_user', balance: 123.45, power: 5.2, status: 'inactive', mining: false, vip: false },
+            { id: 7, username: 'vip_member', balance: 567890.12, power: 3456.7, status: 'active', mining: true, vip: true },
+            { id: 8, username: 'beginner99', balance: 890.12, power: 25.6, status: 'active', mining: true, vip: false },
+        ];
+
+        let currentFilter = 'all';
+
+        // กราฟรายได้รายเดือน
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(revenueCtx, {
+            type: 'bar',
+            data: {
+                labels: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.'],
+                datasets: [{
+                    label: 'รายได้ (THB)',
+                    data: [320000, 450000, 520000, 480000, 680000, 750000, 820000, 950000, 1100000, 1250000, 1350000],
+                    backgroundColor: 'rgba(16, 185, 129, 0.8)',
+                    borderColor: '#10b981',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        labels: { color: 'white', font: { size: 14 } }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: 'white' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    },
+                    x: {
+                        ticks: { color: 'white' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' }
+                    }
+                }
+            }
+        });
+
+        // กราฟสัดส่วนผู้ใช้
+        const usersCtx = document.getElementById('usersChart').getContext('2d');
+        const usersChart = new Chart(usersCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['กำลังขุด', 'ออฟไลน์', 'พักเบรก'],
+                datasets: [{
+                    data: [856, 278, 100],
+                    backgroundColor: ['#10b981', '#ef4444', '#f59e0b'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        labels: { color: 'white', font: { size: 14 } },
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // กราฟการเงิน
+        const financialCtx = document.getElementById('financialChart');
+        if (financialCtx) {
+            new Chart(financialCtx.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: ['สัปดาห์ 1', 'สัปดาห์ 2', 'สัปดาห์ 3', 'สัปดาห์ 4'],
+                    datasets: [{
+                        label: 'รายได้',
+                        data: [280000, 350000, 390000, 330000],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'การถอนเงิน',
+                        data: [95000, 120000, 140000, 95000],
+                        borderColor: '#ef4444',
+                        backgroundColor: 'rgba(239, 68, 68, 0.2)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { color: 'white' } } },
+                    scales: {
+                        y: { ticks: { color: 'white' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                        x: { ticks: { color: 'white' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+                    }
+                }
+            });
+        }
+
+        // กราฟการเติบโตผู้ใช้
+        const userGrowthCtx = document.getElementById('userGrowthChart');
+        if (userGrowthCtx) {
+            new Chart(userGrowthCtx.getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.'],
+                    datasets: [{
+                        label: 'ผู้ใช้ทั้งหมด',
+                        data: [150, 280, 450, 620, 780, 920, 1050, 1180, 1290, 1380, 1450],
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { color: 'white' } } },
+                    scales: {
+                        y: { ticks: { color: 'white' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } },
+                        x: { ticks: { color: 'white' }, grid: { color: 'rgba(255, 255, 255, 0.1)' } }
+                    }
+                }
+            });
+        }
+
+        // กราฟรายได้แยกตามเครื่องขุด
+        const minerRevenueCtx = document.getElementById('minerRevenueChart');
+        if (minerRevenueCtx) {
+            new Chart(minerRevenueCtx.getContext('2d'), {
+                type: 'pie',
+                data: {
+                    labels: ['RTX 3060', 'RTX 3080', 'RTX 4090', 'ASIC S19', 'Mining Farm', 'อื่นๆ'],
+                    datasets: [{
+                        data: [15, 25, 20, 18, 12, 10],
+                        backgroundColor: ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#64748b'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { labels: { color: 'white' }, position: 'bottom' } }
+                }
+            });
+        }
+
+        // แสดงตารางผู้ใช้
+        function renderUsersTable() {
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = '';
+            
+            let filteredUsers = usersData;
+            if (currentFilter === 'mining') {
+                filteredUsers = usersData.filter(u => u.mining);
+            } else if (currentFilter === 'offline') {
+                filteredUsers = usersData.filter(u => u.status === 'inactive');
+            } else if (currentFilter === 'vip') {
+                filteredUsers = usersData.filter(u => u.vip);
+            } else if (currentFilter === 'banned') {
+                filteredUsers = usersData.filter(u => u.status === 'banned');
+            }
+            
+            filteredUsers.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>#${user.id}</td>
+                    <td>${user.username} ${user.vip ? '👑' : ''}</td>
+                    <td>฿${user.balance.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
+                    <td>${user.power} MH/s</td>
+                    <td>
+                        <span class="status-badge ${user.status === 'active' ? 'status-active' : 'status-inactive'}">
+                            ${user.status === 'active' ? (user.mining ? '🔥 กำลังขุด' : '✅ ออนไลน์') : '❌ ออฟไลน์'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="action-btn btn-view" onclick="viewUser(${user.id})">👁️</button>
+                        <button class="action-btn btn-edit" onclick="editUser(${user.id})">✏️</button>
+                        <button class="action-btn btn-delete" onclick="deleteUser(${user.id})">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // แสดงกิจกรรม
+        function renderActivities() {
+            const container = document.getElementById('activityContainer');
+            const activities = [
+                { icon: '💰', text: 'user001 ถอนเงิน ฿5,000', time: '2 นาทีที่แล้ว' },
+                { icon: '🛒', text: 'miner_pro ซื้อเครื่องขุด RTX 4090', time: '5 นาทีที่แล้ว' },
+                { icon: '✅', text: 'crypto_king เริ่มขุดแล้ว', time: '8 นาทีที่แล้ว' },
+                { icon: '👤', text: 'ผู้ใช้ใหม่ newbie456 ลงทะเบียน', time: '12 นาทีที่แล้ว' },
+                { icon: '🔥', text: 'gold_miner ได้รับรายได้ ฿10,000', time: '15 นาทีที่แล้ว' },
+                { icon: '⏸️', text: 'lazy_user หยุดขุด', time: '20 นาทีที่แล้ว' },
+                { icon: '💎', text: 'vip_member อัพเกรดเป็น VIP', time: '25 นาทีที่แล้ว' },
+                { icon: '🎉', text: 'beginner99 ผ่านรายได้ ฿1,000 แล้ว', time: '30 นาทีที่แล้ว' }
+            ];
+
+            container.innerHTML = '';
+            activities.forEach(activity => {
+                const item = document.createElement('div');
+                item.className = 'activity-item';
+                item.innerHTML = `
+                    <div class="activity-icon">${activity.icon}</div>
+                    <div class="activity-content">
+                        <div>${activity.text}</div>
+                        <div class="activity-time">${activity.time}</div>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        // แสดง Top Users
+        function renderTopUsers() {
+            const container = document.getElementById('topUsersContainer');
+            if (!container) return;
+
+            const topUsers = [...usersData].sort((a, b) => b.balance - a.balance).slice(0, 10);
+            container.innerHTML = '';
+
+            topUsers.forEach((user, index) => {
+                const card = document.createElement('div');
+                card.className = 'top-users-card';
+                const rankClass = index === 0 ? 'rank-1' : index === 1 ? 'rank-2' : index === 2 ? 'rank-3' : 'rank-other';
+                
+                card.innerHTML = `
+                    <div class="rank-badge ${rankClass}">#${index + 1}</div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold;">${user.username} ${user.vip ? '👑' : ''}</div>
+                        <div style="font-size: 0.9em; opacity: 0.8;">พลัง: ${user.power} MH/s</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-weight: bold; color: #4ade80;">฿${user.balance.toLocaleString('th-TH', {minimumFractionDigits: 2})}</div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // ฟังก์ชันเปลี่ยน Section
+        function showSection(sectionName) {
+            // ซ่อนทุก section
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // แสดง section ที่เลือก
+            const sectionMap = {
+                'dashboard': 'dashboardSection',
+                'users': 'usersSection',
+                'earnings': 'earningsSection',
+                'miners': 'minersSection',
+                'rewards': 'rewardsSection',
+                'analytics': 'analyticsSection',
+                'notifications': 'notificationsSection',
+                'settings': 'settingsSection'
+            };
+
+            const targetSection = document.getElementById(sectionMap[sectionName]);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                
+                // รีเฟรชกราฟถ้าจำเป็น
+                if (sectionName === 'analytics') {
+                    renderTopUsers();
+                }
+            }
+
+            // อัพเดทเมนู
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.menu-item').classList.add('active');
+        }
+
+        // ฟังก์ชันกรองผู้ใช้
+        function filterUsers(filter) {
+            currentFilter = filter;
+            renderUsersTable();
+
+            // อัพเดทปุ่ม
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // ฟังก์ชันค้นหาผู้ใช้
+        function searchUsers() {
+            const searchTerm = document.getElementById('userSearch').value.toLowerCase();
+            const filteredUsers = usersData.filter(user => 
+                user.username.toLowerCase().includes(searchTerm) ||
+                user.id.toString().includes(searchTerm)
+            );
+
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = '';
+            
+            filteredUsers.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>#${user.id}</td>
+                    <td>${user.username} ${user.vip ? '👑' : ''}</td>
+                    <td>฿${user.balance.toLocaleString('th-TH', {minimumFractionDigits: 2})}</td>
+                    <td>${user.power} MH/s</td>
+                    <td>
+                        <span class="status-badge ${user.status === 'active' ? 'status-active' : 'status-inactive'}">
+                            ${user.status === 'active' ? (user.mining ? '🔥 กำลังขุด' : '✅ ออนไลน์') : '❌ ออฟไลน์'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="action-btn btn-view" onclick="viewUser(${user.id})">👁️</button>
+                        <button class="action-btn btn-edit" onclick="editUser(${user.id})">✏️</button>
+                        <button class="action-btn btn-delete" onclick="deleteUser(${user.id})">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Modal Functions
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function showAddUserModal() {
+            document.getElementById('addUserModal').style.display = 'flex';
+        }
+
+        function showSendNotificationModal() {
+            document.getElementById('notificationModal').style.display = 'flex';
+        }
+
+        function addNewUser() {
+            alert('เพิ่มผู้ใช้ใหม่สำเร็จ! ✅');
+            closeModal('addUserModal');
+        }
+
+        function sendNotification() {
+            const title = document.getElementById('notifTitle').value;
+            const message = document.getElementById('notifMessage').value;
+            if (title && message) {
+                alert(`ส่งประกาศ "${title}" สำเร็จ! 📢`);
+                closeModal('notificationModal');
+            } else {
+                alert('กรุณากรอกข้อมูลให้ครบ');
+            }
+        }
+
+        // ฟังก์ชันจัดการผู้ใช้
+        function viewUser(id) {
+            const user = usersData.find(u => u.id === id);
+            alert(`ข้อมูลผู้ใช้ #${id}
+ชื่อ: ${user.username}
+ยอดเงิน: ฿${user.balance.toFixed(2)}
+พลังขุด: ${user.power} MH/s
+สถานะ: ${user.status === 'active' ? 'ใช้งาน' : 'ไม่ใช้งาน'}
+VIP: ${user.vip ? 'ใช่' : 'ไม่ใช่'}`);
+        }
+
+        function editUser(id) {
+            const user = usersData.find(u => u.id === id);
+            document.getElementById('editUsername').value = user.username;
+            document.getElementById('editBalance').value = user.balance;
+            document.getElementById('editPower').value = user.power;
+            document.getElementById('editStatus').value = user.status;
+            document.getElementById('editUserModal').style.display = 'flex';
+        }
+
+        function saveUserEdit() {
+            alert('บันทึกการแก้ไขสำเร็จ! ✅');
+            closeModal('editUserModal');
+            renderUsersTable();
+        }
+
+        function deleteUser(id) {
+            if (confirm(`คุณต้องการลบผู้ใช้ #${id} ใช่หรือไม่?`)) {
+                usersData = usersData.filter(u => u.id !== id);
+                renderUsersTable();
+                alert('ลบผู้ใช้สำเร็จ');
+            }
+        }
+
+        // ฟังก์ชันอื่นๆ
+        function refreshData() {
+            const totalUsers = 1234 + Math.floor(Math.random() * 50);
+            const totalRevenue = 5678900 + Math.floor(Math.random() * 10000);
+            const activeMiners = 856 + Math.floor(Math.random() * 20);
+            const todayRevenue = 123456 + Math.floor(Math.random() * 5000);
+
+            document.getElementById('totalUsers').textContent = totalUsers.toLocaleString();
+            document.getElementById('totalRevenue').textContent = totalRevenue.toLocaleString();
+            document.getElementById('activeMiners').textContent = activeMiners.toLocaleString();
+            document.getElementById('todayRevenue').textContent = todayRevenue.toLocaleString();
+
+            alert('รีเฟรชข้อมูลสำเร็จ! ✅');
+        }
+
+        function toggleSetting(element) {
+            element.classList.toggle('active');
+        }
+
+        function saveSettings() {
+            alert('บันทึกการตั้งค่าสำเร็จ! ✅');
+        }
+
+        function exportToExcel() {
+            alert('กำลัง Export ไฟล์ Excel... 📥');
+        }
+
+        function exportToPDF() {
+            alert('กำลัง Export ไฟล์ PDF... 📄');
+        }
+
+        function editMiner(id) {
+            alert(`แก้ไขเครื่องขุด #${id}`);
+        }
+
+        function deleteMiner(id) {
+            if (confirm('คุณต้องการลบเครื่องขุดนี้ใช่หรือไม่?')) {
+                alert('ลบเครื่องขุดสำเร็จ');
+            }
+        }
+
+        function showAddMinerModal() {
+            alert('เปิดหน้าเพิ่มเครื่องขุดใหม่');
+        }
+
+        function editDailyRewards() {
+            alert('เปิดหน้าแก้ไขรางวัลประจำวัน');
+        }
+
+        function showAddQuestModal() {
+            alert('เปิดหน้าเพิ่มเควสใหม่');
+        }
+
+        function editQuest(id) {
+            alert(`แก้ไขเควส #${id}`);
+        }
+
+        function deleteQuest(id) {
+            if (confirm('คุณต้องการลบเควสนี้ใช่หรือไม่?')) {
+                alert('ลบเควสสำเร็จ');
+            }
+        }
+
+        function deleteNotification(id) {
+            if (confirm('คุณต้องการลบประกาศนี้ใช่หรือไม่?')) {
+                alert('ลบประกาศสำเร็จ');
+            }
+        }
+
+        function updateBasicRate(value) {
+            console.log('อัพเดทอัตราพื้นฐาน:', value);
+        }
+
+        function updateVIPBonus(value) {
+            console.log('อัพเดทโบนัส VIP:', value);
+        }
+
+        function updateMinWithdraw(value) {
+            console.log('อัพเดทยอดถอนขั้นต่ำ:', value);
+        }
+
+        // เริ่มต้นระบบ
+        renderUsersTable();
+        renderActivities();
+        renderTopUsers();
+
+        // อัพเดทข้อมูลแบบเรียลไทม์
+        setInterval(() => {
+            const currentRevenue = parseInt(document.getElementById('totalRevenue').textContent.replace(/,/g, ''));
+            document.getElementById('totalRevenue').textContent = (currentRevenue + Math.floor(Math.random() * 100)).toLocaleString();
+            
+            const currentToday = parseInt(document.getElementById('todayRevenue').textContent.replace(/,/g, ''));
+            document.getElementById('todayRevenue').textContent = (currentToday + Math.floor(Math.random() * 50)).toLocaleString();
+        }, 5000);
+
+        // อัพเดทกิจกรรมทุก 10 วินาที
+        setInterval(() => {
+            renderActivities();
+        }, 10000);
+    </script>
+</body>
+</html>
