@@ -14,10 +14,14 @@
         }
 
         body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background:
+                radial-gradient(900px 600px at -10% -10%, rgba(6, 182, 212, 0.10), transparent 60%),
+                radial-gradient(900px 600px at 110% 10%, rgba(167, 139, 250, 0.10), transparent 60%),
+                linear-gradient(135deg, #0f172a, #1e293b);
             min-height: 100vh;
             padding: 20px;
-            color: white;
+            padding-bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+            color: #e5e7eb;
         }
 
         .container {
@@ -397,6 +401,93 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
+        /* Pro theme overrides (clean, sharp, modern) */
+        .header{
+            background: rgba(2,6,23,0.6);
+            border: 1px solid rgba(148,163,184,0.18);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04);
+        }
+        .tab-btn{
+            border-radius: 12px;
+            background: rgba(15,23,42,0.6);
+            border: 1px solid rgba(148,163,184,0.2);
+            backdrop-filter: blur(6px);
+            color: #e5e7eb;
+        }
+        .tab-btn:hover{ transform: translateY(-2px); background: rgba(15,23,42,0.75); }
+        .tab-btn.active{
+            background: linear-gradient(135deg, #10b981, #06b6d4);
+            border-color: transparent;
+            color: #06101a;
+            box-shadow: 0 10px 26px rgba(6,182,212,0.35);
+        }
+        .stat-card, .mining-control, .referral-box, .transaction-list, .miner-card{
+            background: rgba(2,6,23,0.6);
+            border: 1px solid rgba(148,163,184,0.18);
+            box-shadow: 0 10px 26px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.04);
+        }
+        .buy-btn{
+            background: linear-gradient(135deg, #10b981, #06b6d4);
+            color: #06101a;
+            box-shadow: 0 8px 24px rgba(6,182,212,0.35);
+            border-radius: 12px;
+        }
+        .buy-btn:hover:not(:disabled){ transform: translateY(-1px) scale(1.02); box-shadow: 0 12px 32px rgba(6,182,212,0.45); }
+        .copy-btn{
+            background: linear-gradient(135deg, #60a5fa, #22d3ee);
+            color: #06101a;
+            box-shadow: 0 8px 24px rgba(34,211,238,0.35);
+            border-radius: 12px;
+        }
+        .copy-btn:hover{ transform: translateY(-1px) scale(1.02); box-shadow: 0 12px 30px rgba(34,211,238,0.45); }
+        .notification{
+            background: linear-gradient(135deg, #10b981, #06b6d4);
+            color: #06101a;
+            box-shadow: 0 6px 22px rgba(6,182,212,0.35);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav{
+            position: fixed; left:0; right:0; bottom:0; z-index: 100;
+            background: rgba(2,6,23,0.75);
+            border-top: 1px solid rgba(148,163,184,0.22);
+            backdrop-filter: blur(10px);
+            padding: 10px 12px calc(12px + env(safe-area-inset-bottom, 0px));
+        }
+        .bottom-grid{ display:grid; grid-template-columns: repeat(5, 1fr); gap:8px; max-width: 900px; margin: 0 auto; }
+        .bottom-item{
+            display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px;
+            color:#94a3b8; border:1px solid rgba(148,163,184,0.18); background: rgba(15,23,42,0.6);
+            padding:10px 6px; border-radius:12px; cursor:pointer; transition: .18s ease; min-height:56px;
+        }
+        .bottom-item .icon{ font-size:18px; }
+        .bottom-item .label{ font-size:.80rem; font-weight:700; letter-spacing:.1px; }
+        .bottom-item:hover{ transform: translateY(-1px); border-color: rgba(6,182,212,0.45); }
+        .bottom-item.active{
+            background: linear-gradient(135deg, #10b981, #06b6d4);
+            color:#06101a; border-color: transparent; box-shadow: 0 10px 22px rgba(6,182,212,0.28);
+        }
+
+        /* Settings form polish */
+        #settings h2, #settings h3{ position: relative; }
+        #settings h3::after{ content:""; display:block; width:72px; height:3px; margin-top:8px; border-radius:2px; background: linear-gradient(90deg, #10b981, #06b6d4); opacity:.8; }
+        #settings label{ display:block; margin-bottom:6px; font-weight:700; opacity:.9; }
+        #settings .referral-box input,
+        #settings .referral-box select{
+            background: rgba(15,23,42,0.75) !important;
+            color: #e5e7eb !important;
+            border: 1px solid rgba(148,163,184,0.25) !important;
+            border-radius: 12px !important;
+            padding: 12px 14px !important;
+            outline: none !important;
+            transition: box-shadow .18s ease, transform .1s ease, border-color .18s ease;
+        }
+        #settings .referral-box input:focus,
+        #settings .referral-box select:focus{
+            box-shadow: 0 0 0 6px rgba(6,182,212,0.18) !important;
+            border-color: rgba(6,182,212,0.6) !important;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .header h1 { font-size: 1.8em; }
@@ -426,15 +517,7 @@
             </div>
         </div>
 
-        <!-- Navigation Tabs -->
-        <div class="nav-tabs">
-            <button class="tab-btn active" onclick="switchTab('mining')">⛏️ ขุดเงิน</button>
-            <button class="tab-btn" onclick="switchTab('shop')">🛒 ร้านค้า</button>
-            <button class="tab-btn" onclick="switchTab('wheel')">🎰 วงล้อโชค</button>
-            <button class="tab-btn" onclick="switchTab('wallet')">💰 กระเป๋าเงิน</button>
-            <button class="tab-btn" onclick="switchTab('referral')">👥 แนะนำเพื่อน</button>
-        </div>
-
+        
         <!-- Tab 1: Mining -->
         <div id="mining" class="tab-content active">
             <div class="dashboard">
@@ -571,7 +654,102 @@
                 </div>
             </div>
         </div>
+
+        <!-- Tab 6: Settings -->
+        <div id="settings" class="tab-content">
+            <h2 style="margin-bottom: 20px;">⚙️ การตั้งค่า</h2>
+
+            <div class="referral-box" style="margin-bottom:20px;">
+                <h3>บัญชีและความปลอดภัย</h3>
+                <p style="opacity:.85; margin:6px 0 16px;">แก้ไขชื่อผู้ใช้ อีเมล และรหัสผ่าน</p>
+                <div style="display:grid; gap:14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+                    <div>
+                        <label>ชื่อผู้ใช้</label>
+                        <input id="set_username" type="text" placeholder="ชื่อผู้ใช้" style="width:100%; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.1); color:#fff;">
+                    </div>
+                    <div>
+                        <label>อีเมล</label>
+                        <input id="set_email" type="email" placeholder="อีเมล" style="width:100%; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.1); color:#fff;">
+                    </div>
+                    <div>
+                        <label>รหัสผ่านใหม่</label>
+                        <input id="set_password" type="password" placeholder="รหัสผ่านใหม่" style="width:100%; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.1); color:#fff;">
+                    </div>
+                    <div>
+                        <label>ยืนยันรหัสผ่าน</label>
+                        <input id="set_password2" type="password" placeholder="ยืนย��นรหัสผ่าน" style="width:100%; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.1); color:#fff;">
+                    </div>
+                </div>
+                <button class="buy-btn" style="margin-top:16px; max-width:260px;" onclick="saveAccountSettings()">บันทึกบัญชี</button>
+            </div>
+
+            <div class="referral-box">
+                <h3>ข้อมูลส่วนตัว</h3>
+                <p style="opacity:.85; margin:6px 0 16px;">เก็บข้อมูลไว้ในเครื่องของคุณเท่านั้น</p>
+                <div style="display:grid; gap:14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+                    <div>
+                        <label>ชื่อ-นามสกุล</label>
+                        <input id="info_fullname" type="text" placeholder="ชื่อ-นามสกุล" style="width:100%; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.1); color:#fff;">
+                    </div>
+                    <div>
+                        <label>อีเมลปัจจุบัน</label>
+                        <input id="info_email" type="email" placeholder="อีเมลปัจจุบัน" style="width:100%; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.1); color:#fff;">
+                    </div>
+                    <div>
+                        <label>เบอร์โทรศัพท์</label>
+                        <input id="info_phone" type="tel" placeholder="เบอร์โทรศัพท์" style="width:100%; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.1); color:#fff;">
+                    </div>
+                    <div>
+                        <label>เพศ</label>
+                        <select id="info_gender" style="width:100%; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.1); color:#fff;">
+                            <option value="">ไม่ระบุ</option>
+                            <option value="male">ชาย</option>
+                            <option value="female">หญิง</option>
+                            <option value="other">อื���นๆ</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>วันเกิด</label>
+                        <input id="info_birth" type="date" style="width:100%; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.1); color:#fff;">
+                    </div>
+                    <div>
+                        <label>ที่อยู่</label>
+                        <input id="info_address" type="text" placeholder="ที่อยู่" style="width:100%; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.1); color:#fff;">
+                    </div>
+                    <div>
+                        <label>รหัสไปรษณีย์</label>
+                        <input id="info_zip" type="text" placeholder="รหัสไปรษณีย์" style="width:100%; padding:12px; border-radius:10px; border:1px solid rgba(255,255,255,.3); background:rgba(255,255,255,.1); color:#fff;">
+                    </div>
+                </div>
+                <button class="copy-btn" style="margin-top:16px; max-width:260px;" onclick="savePersonalInfo()">บันทึกข้อมูลส่วนตัว</button>
+            </div>
+        </div>
     </div>
+
+    <nav class="bottom-nav" role="navigation" aria-label="Main">
+        <div class="bottom-grid">
+            <button class="bottom-item active" data-tab="mining" onclick="switchTab('mining')">
+                <div class="icon">⛏️</div>
+                <div class="label">ขุดเงิน</div>
+            </button>
+            <button class="bottom-item" data-tab="shop" onclick="switchTab('shop')">
+                <div class="icon">🛒</div>
+                <div class="label">ร้านค้า</div>
+            </button>
+            <button class="bottom-item" data-tab="wheel" onclick="switchTab('wheel')">
+                <div class="icon">🎰</div>
+                <div class="label">วงล้อ</div>
+            </button>
+            <button class="bottom-item" data-tab="wallet" onclick="switchTab('wallet')">
+                <div class="icon">💰</div>
+                <div class="label">กระเป๋า</div>
+            </button>
+            <button class="bottom-item" data-tab="settings" onclick="switchTab('settings')">
+                <div class="icon">⚙️</div>
+                <div class="label">ตั้งค่า</div>
+            </button>
+        </div>
+    </nav>
 
     <div class="notification" id="notification"></div>
 
@@ -588,7 +766,20 @@
             referralCode: '',
             referrals: [],
             referralEarnings: 0,
-            transactions: []
+            transactions: [],
+            account: {
+                username: '',
+                email: ''
+            },
+            personalInfo: {
+                fullname: '',
+                email: '',
+                phone: '',
+                gender: '',
+                birth: '',
+                address: '',
+                zip: ''
+            }
         };
 
         // ============ Miners Data ============
@@ -615,12 +806,27 @@
             });
 
             // แสดง tab ที่เลือก
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
+            const targetTab = document.getElementById(tabName);
+            if (targetTab) targetTab.classList.add('active');
+
+            // ตั้ง active ให้ปุ่ม Navigation ให้ตรงกับ tab
+            const matchBtn = Array.from(document.querySelectorAll('.tab-btn')).find(b => {
+                const on = b.getAttribute('onclick') || '';
+                return on.includes(`switchTab('${tabName}')`);
+            });
+            if (matchBtn) matchBtn.classList.add('active');
+
+            // ซิงค์สถานะปุ่ม Bottom Navigation
+            document.querySelectorAll('.bottom-item').forEach(i => i.classList.remove('active'));
+            const matchBottom = Array.from(document.querySelectorAll('.bottom-item')).find(i => i.dataset.tab === tabName);
+            if (matchBottom) matchBottom.classList.add('active');
 
             // อัปเดตข้อมูล
             if (tabName === 'wallet') {
                 updateWallet();
+            }
+            if (tabName === 'settings') {
+                loadSettingsToForm();
             }
         }
 
@@ -813,6 +1019,10 @@
                 try {
                     const user = JSON.parse(userSession);
                     document.getElementById('username').textContent = user.username || user.email || 'ผู้ใช้งาน';
+                    // เติมค่า default ให้ settings จาก session ถ้ายังว่าง
+                    if(!gameData.account.username) gameData.account.username = user.username || '';
+                    if(!gameData.account.email) gameData.account.email = user.email || '';
+                    if(!gameData.personalInfo.email) gameData.personalInfo.email = user.email || '';
                 } catch (e) {
                     document.getElementById('username').textContent = 'ผู้ใช้งาน';
                 }
@@ -844,6 +1054,9 @@
             if (saved) {
                 const loaded = JSON.parse(saved);
                 gameData = { ...gameData, ...loaded };
+                // ป้องกันโครงสร้างเก่าที่ไม่มี fields ใหม่
+                gameData.account = gameData.account || { username:'', email:'' };
+                gameData.personalInfo = gameData.personalInfo || { fullname:'', email:'', phone:'', gender:'', birth:'', address:'', zip:'' };
             }
 
             // สร้างรหัสแนะนำถ้ายังไม่มี
@@ -878,6 +1091,67 @@
             loadData();
             setInterval(saveData, 10000); // บันทึกทุก 10 วินาที
         });
+
+        // ===== Settings Handlers =====
+        function loadSettingsToForm(){
+            // Account & Security
+            document.getElementById('set_username').value = gameData.account.username || '';
+            document.getElementById('set_email').value = gameData.account.email || '';
+            // Personal Info
+            document.getElementById('info_fullname').value = gameData.personalInfo.fullname || '';
+            document.getElementById('info_email').value = gameData.personalInfo.email || '';
+            document.getElementById('info_phone').value = gameData.personalInfo.phone || '';
+            document.getElementById('info_gender').value = gameData.personalInfo.gender || '';
+            document.getElementById('info_birth').value = gameData.personalInfo.birth || '';
+            document.getElementById('info_address').value = gameData.personalInfo.address || '';
+            document.getElementById('info_zip').value = gameData.personalInfo.zip || '';
+        }
+
+        function saveAccountSettings(){
+            const username = document.getElementById('set_username').value.trim();
+            const email = document.getElementById('set_email').value.trim();
+            const pw1 = document.getElementById('set_password').value;
+            const pw2 = document.getElementById('set_password2').value;
+
+            if(pw1 || pw2){
+                if(pw1 !== pw2){
+                    showNotification('❌ รหัสผ่านไม่ตรงกัน');
+                    return;
+                }
+                // อัปเดตรหัสผ่านใน users (เดโม)
+                const users = JSON.parse(localStorage.getItem('users')||'[]');
+                const idx = users.findIndex(u => u.email === email);
+                if(idx !== -1){ users[idx].password = pw1; localStorage.setItem('users', JSON.stringify(users)); }
+            }
+
+            gameData.account.username = username;
+            gameData.account.email = email;
+
+            // อัปเดต session แสดงชื่อบนหัว
+            const sess = JSON.parse(localStorage.getItem('userSession')||'{}');
+            const newSess = { ...sess, username: username || sess.username, email: email || sess.email };
+            localStorage.setItem('userSession', JSON.stringify(newSess));
+            document.getElementById('username').textContent = newSess.username || newSess.email || 'ผู้ใช้งาน';
+
+            saveData();
+            showNotification('✅ บั���ทึกบัญชีสำเร็จ');
+
+            // ล้างรหัสผ่านที่กรอก
+            document.getElementById('set_password').value = '';
+            document.getElementById('set_password2').value = '';
+        }
+
+        function savePersonalInfo(){
+            gameData.personalInfo.fullname = document.getElementById('info_fullname').value.trim();
+            gameData.personalInfo.email = document.getElementById('info_email').value.trim();
+            gameData.personalInfo.phone = document.getElementById('info_phone').value.trim();
+            gameData.personalInfo.gender = document.getElementById('info_gender').value;
+            gameData.personalInfo.birth = document.getElementById('info_birth').value;
+            gameData.personalInfo.address = document.getElementById('info_address').value.trim();
+            gameData.personalInfo.zip = document.getElementById('info_zip').value.trim();
+            saveData();
+            showNotification('✅ บันทึกข้อมูลส่วนตัวสำเร็จ');
+        }
 
         console.log('⛏️ Crypto Mining Pro - All-in-One Loaded! 🚀');
     </script>
